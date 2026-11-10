@@ -21,7 +21,12 @@
 </p>
 
 <p align="center">
-  <img src="assets/screenshot.png" alt="Hando on macOS, with a nearby device">
+  <img src="assets/screenshots/macos-en.png" alt="Hando on macOS, with nearby devices">
+</p>
+
+<p align="center">
+  <img src="assets/screenshots/ios-en.png" alt="Hando on iPhone" width="280">
+  <img src="assets/screenshots/android-en.png" alt="Hando on Android" width="280">
 </p>
 
 ## Features

@@ -21,7 +21,12 @@
 </p>
 
 <p align="center">
-  <img src="assets/screenshot.png" alt="macOS 上的 Hando，附近有一台设备">
+  <img src="assets/screenshots/macos-zh-Hans.png" alt="macOS 上的 Hando，附近有几台设备">
+</p>
+
+<p align="center">
+  <img src="assets/screenshots/ios-zh-Hans.png" alt="iPhone 上的 Hando" width="280">
+  <img src="assets/screenshots/android-zh-Hans.png" alt="Android 上的 Hando" width="280">
 </p>
 
 ## 功能
