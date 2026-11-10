@@ -14,15 +14,14 @@ import (
 
 // nearbyPage shows this device, the network's state and nearby devices.
 func (a *app) nearbyPage(cx *core.Scope) core.Node {
-	return core.Scroll{Style: ui.FillRest, TestID: "nearby-page", Children: []core.Node{
+	return a.pageScroll(cx, "nearby", "nearby-page",
 		core.View{Style: core.Style{Padding: pagePadding, Gap: 18}, Children: []core.Node{
 			a.ownCard(cx),
 			a.networkBanners(cx),
 			a.devicesHeader(cx),
 			a.deviceGrid(cx),
 			bottomGap(cx),
-		}},
-	}}
+		}})
 }
 
 // ownCard describes this device and its receiver.

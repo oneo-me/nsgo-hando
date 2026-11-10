@@ -14,7 +14,7 @@ import (
 
 // transfersPage lists active transfers and the recent history.
 func (a *app) transfersPage(cx *core.Scope) core.Node {
-	return core.Scroll{Style: ui.FillRest, TestID: "transfers-page", Children: []core.Node{
+	return a.pageScroll(cx, "transfers", "transfers-page",
 		core.Dynamic(func(cx *core.Scope) core.Node {
 			active := a.activeTransfers()
 			done := a.finishedTransfers()
@@ -38,8 +38,7 @@ func (a *app) transfersPage(cx *core.Scope) core.Node {
 			}
 			body = append(body, bottomGap(cx))
 			return core.View{Style: core.Style{Padding: pagePadding, Gap: 18}, Children: body}
-		}),
-	}}
+		}))
 }
 
 // sectionTitle heads a list with a count.

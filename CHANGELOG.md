@@ -3,6 +3,9 @@
 ## [Unreleased]
 
 - Add an official website for GitHub Pages, with downloads, compatibility and privacy pages in English and Chinese.
+- Change iPhone pages to a large title in one row with its Liquid Glass buttons, scrolling away with the page.
+- Change settings to iOS-style grouped lists.
+- Fix the send and PIN sheets on phones staying under the software keyboard.
 
 ## [0.2026.1] - 2026-11-11
 

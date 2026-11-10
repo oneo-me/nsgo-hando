@@ -60,6 +60,7 @@ func (a *app) sendDialogBody(cx *core.Scope, target localsend.Device) core.Node 
 				return a.scanning.Get() || (len(a.sendFiles.Get()) == 0 && strings.TrimSpace(a.sendMsg.Get()) == "")
 			}, OnPress: a.send, TestID: "send-submit"},
 		},
+		Style:  aboveKeyboard,
 		TestID: "send-dialog",
 	}
 }
@@ -522,6 +523,10 @@ func (a *app) finalizeSend(id, status, reason, message string) {
 	}
 }
 
+// aboveKeyboard lifts a dialog's sheet over the software keyboard, which
+// would cover its fields; ui.Dialog leaves the sheet at the bottom.
+var aboveKeyboard = core.Style{MarginEnv: core.EnvEdges{Bottom: core.EnvKeyboard}}
+
 // pinDialog asks for the PIN a receiver wants.
 func (a *app) pinDialog(cx *core.Scope) core.Node {
 	return core.Show{When: func() bool { return a.pinPrompt.Get() != nil }, Then: func(cx *core.Scope) core.Node {
@@ -550,6 +555,7 @@ func (a *app) pinDialog(cx *core.Scope) core.Node {
 				ui.Button{Text: l.Cancel(), Variant: ui.ButtonSecondary, OnPress: a.abandonPIN, TestID: "pin-cancel"},
 				ui.Button{Text: l.Send(), OnPress: a.submitPIN, TestID: "pin-submit"},
 			},
+			Style:  aboveKeyboard,
 			TestID: "pin-dialog",
 		}
 	}}

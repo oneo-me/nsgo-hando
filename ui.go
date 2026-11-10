@@ -75,9 +75,75 @@ func (a *app) mobileShell(cx *core.Scope, pages []core.Node) core.Node {
 	return ui.TabShell{Tabs: tabs, Selected: a.pageIndex, OnChange: a.setPageIndex, Label: l.AppName(), TestID: "tabs"}
 }
 
-// mobilePage is a page with its own header under the tab shell.
+// mobilePage is a page with its own header under the tab shell; on iOS
+// its pageScroll leads with the title instead.
 func (a *app) mobilePage(cx *core.Scope, page string, body core.Node) core.Node {
+	if a.largeTitle(cx) {
+		return core.View{Style: ui.FillRest, Children: []core.Node{body}, TestID: "page-" + page}
+	}
 	return ui.PlainShell{Title: a.pageTitle(cx), Actions: a.headerActions(cx), Content: []core.Node{body}, TestID: "page-" + page}
+}
+
+// largeTitle reports whether pages show iOS's large title in a row with
+// their actions, at the top of what scrolls.
+func (a *app) largeTitle(cx *core.Scope) bool {
+	return cx.Env().OS() == core.OSIOS && !a.wide.GetUntracked()
+}
+
+// pageScroll is page's scroll view of content. With largeTitle the
+// page's title and actions lead it, scrolling away together, and the
+// content blurs under the status bar.
+func (a *app) pageScroll(cx *core.Scope, page, testID string, content core.Node) core.Node {
+	if !a.largeTitle(cx) {
+		return core.Scroll{Style: ui.FillRest, TestID: testID, Children: []core.Node{content}}
+	}
+	scroll := &core.Ref{}
+	bar := core.View{EdgeBar: core.EdgeBar{Scroll: scroll, Side: core.SideTop}, PointerEvents: core.PointerEventsNone,
+		Style: core.Style{Position: core.Absolute, Top: core.Pt(0), Right: core.Pt(0), Left: core.Pt(0)},
+		// The blur runs on past the bar; keep it off the title at rest.
+		StyleFunc: func() core.Style { return core.Style{Height: core.Pt(max(0, core.Insets(cx).Top-24))} }}
+	return core.View{Style: ui.FillRest, Children: []core.Node{
+		core.Scroll{Ref: scroll, Style: ui.FillRest, TestID: testID, Children: []core.Node{a.titleRow(cx, page), content}},
+		bar,
+	}}
+}
+
+// titleRow is page's large title with its actions, as glass buttons, at
+// the end.
+func (a *app) titleRow(cx *core.Scope, page string) core.Node {
+	l := locales.For(cx)
+	colors := ui.ColorsOf(cx)
+	children := []core.Node{core.Text{ContentFunc: func() string { return a.titleOf(cx, page) }, Role: core.RoleHeader, MaxLines: 1,
+		Style: core.Style{FontSize: 34, LineHeight: 41, FontWeight: ui.Bold, FlexGrow: 1, FlexShrink: 1}, StyleFunc: ui.Colored(colors.Text)}}
+	switch page {
+	case "nearby":
+		children = append(children, glassButton(cx, func() *core.SVG {
+			if a.refreshing.Get() {
+				return lucide.LoaderCircle()
+			}
+			return lucide.RefreshCw()
+		}, l.Refresh(), a.refreshing.Get, a.refresh, "refresh"))
+	case "transfers":
+		children = append(children, core.Show{When: func() bool { return len(a.finishedTransfers()) > 0 }, Then: func(cx *core.Scope) core.Node {
+			return glassButton(cx, lucide.Trash, l.ClearHistory(), nil, a.clearHistory, "clear-history")
+		}})
+	}
+	return core.View{Style: core.Style{Direction: core.Row, AlignItems: core.AlignCenter, Gap: 12}, StyleFunc: func() core.Style {
+		return core.Style{Padding: core.Edges{Top: core.Insets(cx).Top + 8, Right: pagePadding.Right, Left: pagePadding.Left}}
+	}, Children: children}
+}
+
+// glassButton is a round button on Liquid Glass, as iOS's bar buttons.
+func glassButton(cx *core.Scope, icon func() *core.SVG, label string, disabled func() bool, press func(), testID string) core.Node {
+	colors := ui.ColorsOf(cx)
+	if disabled == nil {
+		disabled = func() bool { return false }
+	}
+	return ui.Press{OnPress: press, Disabled: disabled, Label: label, TestID: testID, Scale: 0.92,
+		Style: core.Style{Width: core.Pt(44), Height: core.Pt(44), CornerRadius: 22, FlexShrink: 0, AlignItems: core.AlignCenter,
+			JustifyContent: core.JustifyCenter, GlassEffect: core.GlassRegular, BackdropFilters: []core.Filter{core.Blur(24)}},
+		StyleFunc: func() core.Style { return core.Style{Background: ui.Alpha(colors.Surface(), 0.55)} },
+		Children:  []core.Node{ui.IconOf(icon, 20, colors.Text)}}
 }
 
 // pageStack keeps every desktop page mounted, showing the chosen one.
@@ -93,6 +159,18 @@ func (a *app) pageStack(pages []core.Node) core.Node {
 		}, TestID: "page-" + []string{"nearby", "transfers", "settings"}[index]}
 	}
 	return core.View{Style: ui.FillRest, Children: children}
+}
+
+// titleOf names page.
+func (a *app) titleOf(cx *core.Scope, page string) string {
+	l := locales.For(cx)
+	switch page {
+	case "transfers":
+		return l.Transfers()
+	case "settings":
+		return l.Settings()
+	}
+	return l.Nearby()
 }
 
 // headerTitle is the page's name in the shell's header.
