@@ -104,6 +104,9 @@ language: 语言
 languageSystem: 跟随系统
 languageEnglish: English
 languageChinese: 简体中文
+settingsPrivacy: 隐私
+usageStats: 发送使用统计
+usageStatsDetail: 发送打开了哪些页面及使用时长，不含个人信息、设备或文件，帮助改进 Hando。
 settingsAbout: 关于
 protocol: LocalSend 协议
 version: 版本

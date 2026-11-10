@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 - Add an official website for GitHub Pages, with downloads, compatibility and privacy pages in English and Chinese.
+- Add anonymous usage statistics to the app and the website, with a switch in Settings to turn them off.
 - Change iPhone pages to a large title in one row with its Liquid Glass buttons, scrolling away with the page.
 - Change settings to iOS-style grouped lists.
 - Fix the send and PIN sheets on phones staying under the software keyboard.

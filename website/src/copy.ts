@@ -478,27 +478,28 @@ const en: Copy = {
   },
   privacy: {
     title: 'Privacy — Hando',
-    description: 'How Hando and this website handle your data: local transfers, no accounts and no analytics.',
+    description: 'How Hando and this website handle your data: local transfers, no accounts and anonymous usage statistics.',
     hero: {
       eyebrow: 'Privacy',
       title: 'Privacy, by architecture.',
-      lead: 'Hando has nothing to collect: no account, no server and no upload. This page explains what that means for the app and for this website.',
+      lead: 'Hando has no account, no server and no upload; it counts only how it is used, anonymously. This page explains what that means for the app and for this website.',
     },
-    summary: ['No account', 'No analytics', 'No upload'],
+    summary: ['No account', 'Anonymous statistics', 'No upload'],
     app: {
       title: 'The app',
       paragraphs: [
         'Hando creates no account and connects to no Hando service. Transfers go directly between the two devices on your local network.',
         'Transfers use HTTPS with mutual TLS by default. The client pins the peer’s certificate fingerprint, so a transfer cannot be redirected to another device answering on the same address. Older setups can use plain HTTP, which you can choose in Settings.',
         'Device identity, favorites, settings and transfer history are stored on your device. Received files stay in the receive folder you choose.',
+        'Unless you turn it off in Settings, the app sends anonymous usage statistics to our self-hosted Umami: which pages are opened and for how long, the platform, language and window size, and a random ID made on install. It never sends names, addresses, devices, files or messages.',
         'When you send to or receive from the official LocalSend app, that app handles data on its side under its own policy.',
       ],
     },
     website: {
       title: 'This website',
       paragraphs: [
-        'The site is a set of static pages served by GitHub Pages. It sets no cookies and runs no analytics or advertising.',
-        'The appearance and language you choose are kept in your browser’s local storage. Nothing is sent to us.',
+        'The site is a set of static pages served by GitHub Pages. It sets no cookies and runs no advertising. Our self-hosted Umami counts page visits without cookies or personal data.',
+        'The appearance and language you choose are kept in your browser’s local storage and are not sent to us.',
         'GitHub, as the host, may keep standard access logs under GitHub’s privacy statement.',
         'Links to GitHub, X and other sites leave this site; those sites have their own policies.',
       ],
@@ -824,26 +825,27 @@ const zh: Copy = {
   },
   privacy: {
     title: '隐私 — Hando',
-    description: 'Hando 和本网站如何处理你的数据：本地传输、没有账号、没有分析。',
+    description: 'Hando 和本网站如何处理你的数据：本地传输、没有账号、匿名使用统计。',
     hero: {
       eyebrow: '隐私',
       title: '隐私，由架构决定',
-      lead: 'Hando 没有什么可收集的：没有账号、没有服务器，也不上传。这一页说明这对应用和本网站分别意味着什么。',
+      lead: 'Hando 没有账号、没有服务器，也不上传，只匿名统计使用情况。这一页说明这对应用和本网站分别意味着什么。',
     },
-    summary: ['没有账号', '没有分析', '没有上传'],
+    summary: ['没有账号', '匿名统计', '没有上传'],
     app: {
       title: '应用',
       paragraphs: [
         'Hando 不创建账号，也不连接任何 Hando 服务。传输只在你局域网内的两台设备之间直接进行。',
         '传输默认使用 HTTPS 双向 TLS。客户端会固定对端证书的指纹，因此传输不会被重定向到同一地址上的另一台设备。兼容旧设备时，可以在设置中改用普通 HTTP。',
         '设备身份、收藏、设置和传输记录都保存在你的设备上。收到的文件只留在你选择的接收文件夹。',
+        '除非你在设置中关闭，应用会向我们自建的 Umami 发送匿名使用统计：打开了哪些页面及使用时长、平台、语言、窗口尺寸，以及安装时生成的随机 ID。它从不发送名称、地址、设备、文件或消息。',
         '与官方 LocalSend 应用互传时，对方应用会按其自身的隐私政策处理数据。',
       ],
     },
     website: {
       title: '本网站',
       paragraphs: [
-        '本网站是由 GitHub Pages 提供的静态页面，不设置 Cookie，也不运行分析或广告。',
+        '本网站是由 GitHub Pages 提供的静态页面，不设置 Cookie，也不投放广告。我们自建的 Umami 统计页面访问，不使用 Cookie，也不收集个人数据。',
         '你选择的外观和语言保存在浏览器的本地存储中，不会发送给我们。',
         '作为托管方，GitHub 可能按照其隐私声明保留标准访问日志。',
         '指向 GitHub、X 等站点的链接会离开本网站，这些站点有自己的隐私政策。',

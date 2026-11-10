@@ -166,6 +166,9 @@ const (
 	textLanguageSystem
 	textLanguageEnglish
 	textLanguageChinese
+	textSettingsPrivacy
+	textUsageStats
+	textUsageStatsDetail
 	textSettingsAbout
 	textProtocol
 	textVersion
@@ -299,6 +302,9 @@ var keyOfText = [numTexts]string{
 	"languageSystem",
 	"languageEnglish",
 	"languageChinese",
+	"settingsPrivacy",
+	"usageStats",
+	"usageStatsDetail",
 	"settingsAbout",
 	"protocol",
 	"version",
@@ -430,6 +436,9 @@ var textsEn = i18n.NewTexts(""+
 	"Follow system"+
 	"English"+
 	"简体中文"+
+	"Privacy"+
+	"Send usage statistics"+
+	"Send which pages are opened and for how long, with no personal data, devices or files, to help improve Hando."+
 	"About"+
 	"LocalSend protocol"+
 	"Version"+
@@ -558,6 +567,9 @@ var textsEn = i18n.NewTexts(""+
 		13,
 		7,
 		12,
+		7,
+		21,
+		109,
 		5,
 		18,
 		7,
@@ -689,6 +701,9 @@ var textsZhHans = i18n.NewTexts(""+
 	"跟随系统"+
 	"English"+
 	"简体中文"+
+	"隐私"+
+	"发送使用统计"+
+	"发送打开了哪些页面及使用时长，不含个人信息、设备或文件，帮助改进 Hando。"+
 	"关于"+
 	"LocalSend 协议"+
 	"版本"+
@@ -817,6 +832,9 @@ var textsZhHans = i18n.NewTexts(""+
 		12,
 		7,
 		12,
+		6,
+		18,
+		105,
 		6,
 		16,
 		6,
@@ -1888,6 +1906,27 @@ func LanguageChinese(cx *core.Scope) string { return For(cx).LanguageChinese() }
 
 // LanguageChinese is the package's LanguageChinese in the language of msgs.
 func (msgs Messages) LanguageChinese() string { return msgs.text(textLanguageChinese) }
+
+// SettingsPrivacy says "Privacy"
+// in the language the app shows under cx.
+func SettingsPrivacy(cx *core.Scope) string { return For(cx).SettingsPrivacy() }
+
+// SettingsPrivacy is the package's SettingsPrivacy in the language of msgs.
+func (msgs Messages) SettingsPrivacy() string { return msgs.text(textSettingsPrivacy) }
+
+// UsageStats says "Send usage statistics"
+// in the language the app shows under cx.
+func UsageStats(cx *core.Scope) string { return For(cx).UsageStats() }
+
+// UsageStats is the package's UsageStats in the language of msgs.
+func (msgs Messages) UsageStats() string { return msgs.text(textUsageStats) }
+
+// UsageStatsDetail says "Send which pages are opened and for how long, with no personal data, devices or files, to help improve Hando."
+// in the language the app shows under cx.
+func UsageStatsDetail(cx *core.Scope) string { return For(cx).UsageStatsDetail() }
+
+// UsageStatsDetail is the package's UsageStatsDetail in the language of msgs.
+func (msgs Messages) UsageStatsDetail() string { return msgs.text(textUsageStatsDetail) }
 
 // SettingsAbout says "About"
 // in the language the app shows under cx.

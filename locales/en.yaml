@@ -104,6 +104,9 @@ language: Language
 languageSystem: Follow system
 languageEnglish: English
 languageChinese: 简体中文
+settingsPrivacy: Privacy
+usageStats: Send usage statistics
+usageStatsDetail: Send which pages are opened and for how long, with no personal data, devices or files, to help improve Hando.
 settingsAbout: About
 protocol: LocalSend protocol
 version: Version

@@ -16,15 +16,18 @@ import (
 // settingsPage is the app's preferences as grouped lists, the way iOS's
 // Settings lays them out.
 func (a *app) settingsPage(cx *core.Scope) core.Node {
+	sections := []core.Node{
+		a.identitySettings(cx),
+		a.networkSettings(cx),
+		a.receiveSettings(cx),
+		a.appearanceSettings(cx),
+	}
+	if statsShown(cx) {
+		sections = append(sections, a.privacySettings(cx))
+	}
+	sections = append(sections, a.aboutSettings(cx), bottomGap(cx))
 	return a.pageScroll(cx, "settings", "settings-page",
-		core.View{Style: core.Style{Padding: pagePadding, Gap: 28, MaxWidth: core.Pt(760)}, Children: []core.Node{
-			a.identitySettings(cx),
-			a.networkSettings(cx),
-			a.receiveSettings(cx),
-			a.appearanceSettings(cx),
-			a.aboutSettings(cx),
-			bottomGap(cx),
-		}})
+		core.View{Style: core.Style{Padding: pagePadding, Gap: 28, MaxWidth: core.Pt(760)}, Children: sections})
 }
 
 // settingsType is the settings' type scale: larger on touch screens,
@@ -367,6 +370,20 @@ func (a *app) appearanceSettings(cx *core.Scope) core.Node {
 		}, func() string { return a.settings.Get().Locale }, func(value string) {
 			a.settings.Update(func(s settings) settings { s.Locale = value; return s })
 		}, "settings-language"),
+	})
+}
+
+// privacySettings turns the usage statistics on or off.
+func (a *app) privacySettings(cx *core.Scope) core.Node {
+	l := locales.For(cx)
+	return a.settingsSection(cx, l.SettingsPrivacy(), "", []core.Node{
+		a.settingsRow(cx, l.UsageStats(), l.UsageStatsDetail(), ui.Switch{
+			Checked: func() bool { return !a.settings.Get().StatsOff },
+			OnChange: func(on bool) {
+				a.settings.Update(func(s settings) settings { s.StatsOff = !on; return s })
+			},
+			Label: l.UsageStats(),
+		}),
 	})
 }
 

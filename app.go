@@ -42,6 +42,7 @@ type settings struct {
 	VerifyChecksums bool               `json:"verifyChecksums"`
 	Locale          string             `json:"locale"`
 	Appearance      string             `json:"appearance"`
+	StatsOff        bool               `json:"statsOff"`
 }
 
 // transferFile is one file of a transfer.
@@ -249,6 +250,7 @@ func newApp(cx *core.Scope) *app {
 	})
 	cx.Effect(func() { saveJSON(cx.Storage(), "favorites", a.favorites.Get()) })
 	cx.Effect(func() { saveJSON(cx.Storage(), "history", a.history.Get()) })
+	a.reportUsage(cx)
 	cx.OnExit(func(done func()) {
 		a.cancelAllSends()
 		if a.tempDir != "" {

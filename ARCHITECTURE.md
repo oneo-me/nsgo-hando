@@ -15,6 +15,7 @@ Hando is an NSGo app whose screens are Go components and signals, with the Local
 | `settings.go` | The settings page and the receiver's restart when its network settings change. |
 | `ui.go` | The desktop sidebar shell, the phone shell, the header actions, overlays and shared visuals. |
 | `menu.go` | The macOS menu bar. |
+| `stats.go` | Anonymous usage statistics sent to Umami. |
 | `theme.go` | The light and dark palette. |
 | `internal/localsend` | Protocol v2.2: identity and mutual TLS, HTTP client, receiver, IPv4 discovery, receive-path planning and file writing. |
 | `locales/` | English and Simplified Chinese catalogs and the code `nsgo i18n` writes. |
@@ -30,6 +31,7 @@ Hando is an NSGo app whose screens are Go components and signals, with the Local
 - A file is written as `<name>.part` and renamed after it is complete and, when the sender offered a SHA-256 and verification is on, checked. A failed write, checksum or cancellation leaves no final file and removes the part file.
 - One receive session and one upload per file may run at a time; the protocol's session ID and per-file token guard both.
 - Settings are the `settings` storage entry; favorites and history are `favorites` and `history`. The TLS identity lives in the app's data folder, not in storage.
+- Usage statistics are page views and heartbeats with a random install ID, sent to Umami from release builds on native targets; they never carry device, peer, file or transfer data, and a setting turns them off. Builds of `nsgo dev`, tests and the web send nothing.
 
 ## Core flows
 
@@ -43,7 +45,7 @@ Hando is an NSGo app whose screens are Go components and signals, with the Local
 
 ## Data and state
 
-- `cx.Storage()`: `settings`, `favorites` and the last 50 finished transfers. Each is rewritten when its signal changes.
+- `cx.Storage()`: `settings`, `favorites`, the last 50 finished transfers and the statistics' `installID`. Each is rewritten when its signal changes.
 - `cx.DataDir()/identity`: the certificate, its key and the HTTP-mode fingerprint. Tests and hosts without a data folder use a temporary folder.
 - Received files: the chosen folder, else `Downloads/Hando` on desktops and `DataDir/Received` elsewhere.
 - In memory: the discovered devices, the current transfers, the incoming request and the send jobs waiting for a PIN. None is shared with the protocol package.
