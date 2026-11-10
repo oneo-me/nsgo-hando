@@ -8,3 +8,6 @@
 - Add receiving with review, Quick Save for favorites and safe file saves.
 - Add favorites, transfer history, a receive PIN, checksum verification and a chosen receive folder.
 - Add native desktop and phone layouts, English and Simplified Chinese, and builds for macOS, Windows, Linux, iOS and Android.
+- Add a macOS menu bar with settings, page, sidebar and refresh shortcuts.
+- Fix dropped frames on the nearby page while resizing the window and while peers answer discovery.
+- Fix the crowded sidebar footer, whose settings button a long address pushed out.

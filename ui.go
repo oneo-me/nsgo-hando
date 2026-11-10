@@ -195,7 +195,6 @@ func (a *app) selectSidebar(id string) {
 // sidebarFooter shows this device above the sidebar's bottom.
 func (a *app) sidebarFooter(cx *core.Scope) core.Node {
 	colors := ui.ColorsOf(cx)
-	self := a.selfDevice()
 	status := func() string {
 		switch {
 		case a.offline:
@@ -205,26 +204,40 @@ func (a *app) sidebarFooter(cx *core.Scope) core.Node {
 		case !a.nodeReady.Get():
 			return locales.Searching(cx)
 		}
-		addr := a.localAddresses()
 		host := "localhost"
-		if len(addr) > 0 {
+		if addr := a.hosts.Get(); len(addr) > 0 {
 			host = addr[0]
 		}
-		return locales.ServerRunning(cx, host+":"+itoa(self.Port))
+		return host + ":" + itoa(a.selfDevice().Port)
+	}
+	statusColor := func() core.Color {
+		switch {
+		case a.offline, a.serverErr.Get() != "":
+			return colors.Danger()
+		case !a.nodeReady.Get():
+			return colors.Warn()
+		}
+		return colors.Up()
 	}
 	return core.View{OnPress: func(core.PressEvent) { a.page.Set("settings") }, Role: core.RoleButton, Label: locales.Settings(cx), TestID: "sidebar-device",
-		Style: core.Style{Direction: core.Row, AlignItems: core.AlignCenter, Gap: 8, FlexShrink: 0, Padding: core.Symmetric(2, 4), CornerRadius: 8},
+		Style: core.Style{Direction: core.Row, AlignItems: core.AlignCenter, Gap: 10, FlexShrink: 0, Width: core.Pct(100), MinWidth: core.Pt(0),
+			Padding: core.Symmetric(8, 10), CornerRadius: 10, BorderWidth: 1, BorderCurve: core.BorderCurveContinuous, Transition: cardMotion},
 		StyleFunc: func() core.Style {
-			return core.Style{Hover: &core.Style{Background: colors.Hover()}, Active: &core.Style{Background: colors.Pressed()}}
+			return core.Style{Background: colors.Surface(), BorderColor: colors.Border(), Shadows: ui.FinOf(cx).Raised().Shadows,
+				Hover:  &core.Style{BorderColor: ui.Mix(colors.Border(), colors.Accent(), 0.5)},
+				Active: &core.Style{Background: colors.Hover().Over(colors.Surface())}}
 		}, Children: []core.Node{
-			deviceTile(cx, deviceIconForSelf(a.dtype), false, core.Points(30)),
-			core.View{Style: core.Style{FlexGrow: 1, FlexShrink: 1, MinWidth: core.Pt(0), Gap: 1}, Children: []core.Node{
+			deviceTile(cx, deviceIconForSelf(a.dtype), true, 34),
+			core.View{Style: core.Style{FlexGrow: 1, FlexShrink: 1, MinWidth: core.Pt(0), Gap: 3}, Children: []core.Node{
 				core.Text{ContentFunc: func() string { return a.settings.Get().Alias }, MaxLines: 1,
 					Style: ui.TypeLabel.Merge(core.Style{FlexShrink: 1, MinWidth: core.Pt(0)}), StyleFunc: ui.Colored(colors.Text)},
-				core.Text{ContentFunc: status, MaxLines: 1, Style: core.Style{FontSize: 11, FlexShrink: 1, MinWidth: core.Pt(0)},
-					StyleFunc: ui.Colored(colors.Muted)},
+				core.View{Style: core.Style{Direction: core.Row, AlignItems: core.AlignCenter, Gap: 6, MinWidth: core.Pt(0)}, Children: []core.Node{
+					core.View{Style: core.Style{Width: core.Pt(6), Height: core.Pt(6), CornerRadius: 3, FlexShrink: 0}, StyleFunc: ui.Filled(statusColor)},
+					core.Text{ContentFunc: status, MaxLines: 1, Style: core.Style{FontSize: 11, LineHeight: 14, FontVariant: core.FontTabularNums,
+						FlexShrink: 1, MinWidth: core.Pt(0)}, StyleFunc: ui.Colored(colors.Muted)},
+				}},
 			}},
-			ui.IconOf(lucide.Settings, 16, colors.Muted),
+			ui.IconOf(lucide.ChevronRight, 14, colors.Faint),
 		}}
 }
 
@@ -241,7 +254,7 @@ func (a *app) overlays(cx *core.Scope) core.Node {
 // toastView places the toasts over the window.
 func (a *app) toastView(cx *core.Scope) core.Node {
 	return core.Dynamic(func(cx *core.Scope) core.Node {
-		wide := cx.Env().Window().Width >= desktopWidth
+		wide := a.wide.Get()
 		placement, inset := ui.ToastBottomEnd, core.Points(0)
 		if !wide {
 			placement, inset = ui.ToastBottom, 64

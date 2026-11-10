@@ -141,3 +141,8 @@ resizeSidebar: Resize sidebar
 chooseFolderUnavailable: That folder cannot be used on this platform.
 webTitle: Browser build
 webDetail: Receiving and device discovery need native sockets. Use the desktop, iOS or Android app to move files.
+menuSettings: Settings…
+menuEdit: Edit
+menuView: View
+menuWindow: Window
+menuShowSidebar: Show Sidebar

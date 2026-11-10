@@ -141,3 +141,8 @@ resizeSidebar: 调整侧边栏宽度
 chooseFolderUnavailable: 此平台无法使用该文件夹。
 webTitle: 网页版本
 webDetail: 接收文件与发现设备需要原生网络套接字。请使用桌面、iOS 或 Android 应用传输文件。
+menuSettings: 设置…
+menuEdit: 编辑
+menuView: 显示
+menuWindow: 窗口
+menuShowSidebar: 显示侧边栏

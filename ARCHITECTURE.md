@@ -14,6 +14,7 @@ LocalSend on NSGo is an NSGo app whose screens are Go components and signals, wi
 | `transfers.go` | Active and finished transfer cards, history, cancel and open. |
 | `settings.go` | The settings page and the receiver's restart when its network settings change. |
 | `ui.go` | The desktop sidebar shell, the phone shell, the header actions, overlays and shared visuals. |
+| `menu.go` | The macOS menu bar. |
 | `theme.go` | The light and dark palette. |
 | `internal/localsend` | Protocol v2.2: identity and mutual TLS, HTTP client, receiver, IPv4 discovery, receive-path planning and file writing. |
 | `locales/` | English and Simplified Chinese catalogs and the code `nsgo i18n` writes. |

@@ -2,6 +2,7 @@ package main
 
 import (
 	"strings"
+	"time"
 
 	"github.com/oneo-me/nsgo/core"
 	"github.com/oneo-me/nsgo/icons/lucide"
@@ -46,7 +47,7 @@ func (a *app) ownCardBody(cx *core.Scope) core.Node {
 		case !a.nodeReady.Get():
 			return l.Searching()
 		}
-		addresses := a.localAddresses()
+		addresses := a.hosts.Get()
 		host := "localhost"
 		if len(addresses) > 0 {
 			host = addresses[0]
@@ -63,7 +64,9 @@ func (a *app) ownCardBody(cx *core.Scope) core.Node {
 		return colors.Up()
 	}
 	self := a.selfDevice()
-	return core.View{TestID: "this-device", Style: core.Style{Padding: core.All(16), Gap: 14}, StyleFunc: func() core.Style { return ui.CardStyle(cx) },
+	return core.View{TestID: "this-device", Style: core.Style{Padding: core.All(18), Gap: 14}, StyleFunc: func() core.Style {
+		return ui.CardStyle(cx).Merge(core.Style{Shadows: ui.FinOf(cx).Raised().Shadows})
+	},
 		Children: []core.Node{
 			core.View{Style: core.Style{Direction: core.Row, AlignItems: core.AlignCenter, Gap: 12}, Children: []core.Node{
 				deviceTile(cx, deviceIconForSelf(a.dtype), true, 46),
@@ -85,7 +88,7 @@ func (a *app) ownCardBody(cx *core.Scope) core.Node {
 			}},
 			core.View{Style: core.Style{Direction: core.Row, Wrap: core.Wrap, AlignItems: core.AlignCenter, Gap: 8}, Children: a.addresses(cx)},
 			core.View{Style: core.Style{Direction: core.Row, AlignItems: core.AlignCenter, Gap: 8}, Children: []core.Node{
-				core.View{Style: core.Style{Width: core.Pt(7), Height: core.Pt(7), CornerRadius: 4}, StyleFunc: ui.Filled(statusColor)},
+				statusDot(cx, statusColor, func() bool { return !a.offline && a.serverErr.Get() == "" && a.nodeReady.Get() }),
 				core.Text{ContentFunc: status, MaxLines: 1, Style: ui.TypeCaption.Merge(core.Style{FlexShrink: 1}), StyleFunc: ui.Colored(colors.Muted)},
 				core.View{Style: core.Style{FlexGrow: 1}},
 				ui.Badge{TextFunc: func() string {
@@ -107,7 +110,7 @@ func (a *app) ownCardBody(cx *core.Scope) core.Node {
 func (a *app) addresses(cx *core.Scope) []core.Node {
 	colors := ui.ColorsOf(cx)
 	self := a.selfDevice()
-	addresses := append([]string(nil), a.localAddresses()...)
+	addresses := append([]string(nil), a.hosts.Get()...)
 	if len(addresses) == 0 {
 		addresses = []string{"localhost"}
 	}
@@ -194,21 +197,23 @@ func onlineCount(a *app) int {
 }
 
 // deviceGrid lays the devices out, or shows what to do when there are
-// none.
+// none. Cards are keyed by fingerprint, so a device that answers again
+// rebuilds only its own card, and only when what it shows changed.
 func (a *app) deviceGrid(cx *core.Scope) core.Node {
-	return core.Dynamic(func(cx *core.Scope) core.Node {
-		devices := a.mergedDevices()
-		if len(devices) == 0 {
-			return a.emptyNearby(cx)
-		}
-		cards := make([]core.Node, 0, len(devices))
-		for _, d := range devices {
-			cards = append(cards, a.deviceCard(cx, d))
-		}
-		return core.View{Style: core.Style{Display: core.DisplayGrid,
-			GridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))", Gap: 12}, Children: cards}
-	})
+	grid := core.View{Style: core.Style{Display: core.DisplayGrid, GridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", Gap: 12},
+		Children: []core.Node{core.Each(a.mergedDevices, func(d localsend.Device) string { return strings.ToUpper(d.Fingerprint) },
+			func(cx *core.Scope, item func() localsend.Device, _ func() int) core.Node {
+				device := core.NewMemoFunc(cx, item, sameDevice)
+				return core.Dynamic(func(cx *core.Scope) core.Node { return a.deviceCard(cx, device.Get()) })
+			})}}
+	return core.Show{When: func() bool { return len(a.mergedDevices()) > 0 },
+		Then: func(*core.Scope) core.Node { return grid },
+		Else: func(cx *core.Scope) core.Node { return a.emptyNearby(cx) }}
 }
+
+// cardMotion eases a card's fill, edge, shadow and scale between states.
+var cardMotion = core.Transition{Duration: 160 * time.Millisecond, Easing: core.EaseOut,
+	Properties: core.TransitionBackground | core.TransitionBorder | core.TransitionShadow | core.TransitionTransform}
 
 // deviceCard is one nearby device, pressed to send files to it.
 func (a *app) deviceCard(cx *core.Scope, d localsend.Device) core.Node {
@@ -219,15 +224,18 @@ func (a *app) deviceCard(cx *core.Scope, d localsend.Device) core.Node {
 	if model == "" {
 		model = deviceTypeLabel(cx, d.DeviceType)
 	}
+	up := online(d)
 	return core.View{OnPress: func(core.PressEvent) { a.openSend(device) }, Role: core.RoleButton, Label: device.Alias, TestID: "device-" + shortFingerprint(d.Fingerprint),
-		Style: core.Style{Padding: core.All(14), Gap: 12, BorderWidth: 1, CornerRadius: 12, BorderCurve: core.BorderCurveContinuous},
+		Style: core.Style{Padding: core.All(14), Gap: 12, BorderWidth: 1, CornerRadius: 12, BorderCurve: core.BorderCurveContinuous, Transition: cardMotion},
 		StyleFunc: func() core.Style {
-			return core.Style{Background: colors.Surface(), BorderColor: colors.Border(),
-				Hover:  &core.Style{Background: colors.Hover(), BorderColor: ui.Mix(colors.Border(), colors.Accent(), 0.35)},
-				Active: &core.Style{Background: colors.Pressed()}}
+			lift := ui.FinOf(cx).Raised().Shadows
+			return core.Style{Background: colors.Surface(), BorderColor: colors.Border(), Shadows: lift,
+				Hover: &core.Style{BorderColor: ui.Mix(colors.Border(), colors.Accent(), 0.5),
+					Shadows: []core.BoxShadow{ui.Shadow(0, 6, 18, -4, ui.Black(0.14))}},
+				Active: &core.Style{Background: colors.Hover().Over(colors.Surface()), Transform: core.Transform{Scale: 0.985}, Shadows: lift}}
 		}, Children: []core.Node{
 			core.View{Style: core.Style{Direction: core.Row, AlignItems: core.AlignCenter, Gap: 10}, Children: []core.Node{
-				deviceTile(cx, deviceIcon(d), false, 40),
+				deviceTile(cx, deviceIcon(d), up, 40),
 				core.View{Style: core.Style{FlexGrow: 1, FlexShrink: 1, MinWidth: core.Pt(0), Gap: 1}, Children: []core.Node{
 					core.Text{Content: device.Alias, MaxLines: 1, Style: ui.TypeLabel, StyleFunc: ui.Colored(colors.Text)},
 					core.Text{Content: model + " · " + deviceTypeLabel(cx, d.DeviceType), MaxLines: 1, Style: core.Style{FontSize: 11},
@@ -247,13 +255,13 @@ func (a *app) deviceCard(cx *core.Scope, d localsend.Device) core.Node {
 			}},
 			core.View{Style: core.Style{Direction: core.Row, AlignItems: core.AlignCenter, Gap: 6}, Children: []core.Node{
 				core.View{Style: core.Style{Width: core.Pt(7), Height: core.Pt(7), CornerRadius: 4}, StyleFunc: func() core.Style {
-					if online(d) {
+					if up {
 						return core.Style{Background: colors.Up()}
 					}
 					return core.Style{Background: colors.Faint()}
 				}},
 				core.Text{ContentFunc: func() string {
-					if a.favorite(device.Fingerprint) && !online(d) {
+					if a.favorite(device.Fingerprint) && !up {
 						return l.Offline()
 					}
 					return l.Online()
@@ -268,6 +276,18 @@ func (a *app) deviceCard(cx *core.Scope, d localsend.Device) core.Node {
 				ui.IconOf(lucide.ChevronRight, 15, colors.Faint),
 			}},
 		}}
+}
+
+// statusDot is a status color's dot, ringed by a slow ping while live.
+func statusDot(cx *core.Scope, color func() core.Color, live func() bool) core.Node {
+	dot := core.Style{Width: core.Pt(8), Height: core.Pt(8), CornerRadius: 4}
+	ring := core.View{Style: dot.Merge(core.Style{Position: core.Absolute, Top: core.Pt(0), Left: core.Pt(0)}), StyleFunc: func() core.Style {
+		if !live() || ui.ReduceMotion(cx) {
+			return core.Style{Display: core.DisplayNone}
+		}
+		return core.Style{Background: color(), Animation: core.KeyframeAnimation{Keyframes: core.KeyframesPing, Duration: 2 * time.Second}}
+	}}
+	return core.View{Style: dot, StyleFunc: ui.Filled(color), Children: []core.Node{ring}}
 }
 
 // emptyNearby is what shows before a device answers.

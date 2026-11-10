@@ -85,3 +85,33 @@ func TestLanguageSwitch(t *testing.T) {
 		t.Fatal("settings page closed on language change")
 	}
 }
+
+func TestMacMenu(t *testing.T) {
+	t.Setenv("LOCALSEND_OFFLINE", "1")
+	app := nsgotest.Start(t, Root, nsgotest.Size(1100, 760), nsgotest.Storage(map[string]string{"settings": `{"locale":"en"}`}))
+	if len(app.Menu) == 0 {
+		t.Skip("only macOS shows the app's menu bar")
+	}
+	app.ChooseMenu("View", "Transfers")
+	if !app.Exists("id:transfers-empty") {
+		t.Fatal("the View menu did not open transfers")
+	}
+	app.ChooseMenu("LocalSend", "Settings…")
+	if !app.Exists("id:settings-alias") {
+		t.Fatal("Settings… did not open settings")
+	}
+	app.ChooseMenu("View", "Show Sidebar")
+	if app.Exists("id:nav-settings") {
+		t.Fatal("the sidebar is still shown")
+	}
+}
+
+func TestSidebarFooterOpensSettings(t *testing.T) {
+	t.Setenv("LOCALSEND_OFFLINE", "1")
+	app := nsgotest.Start(t, Root, nsgotest.Size(1100, 760))
+	skipIfNoSidebar(t, app)
+	app.Press("id:sidebar-device")
+	if !app.Exists("id:settings-alias") {
+		t.Fatal("the sidebar's device did not open settings")
+	}
+}

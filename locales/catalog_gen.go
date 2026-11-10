@@ -200,6 +200,11 @@ const (
 	textChooseFolderUnavailable
 	textWebTitle
 	textWebDetail
+	textMenuSettings
+	textMenuEdit
+	textMenuView
+	textMenuWindow
+	textMenuShowSidebar
 	numTexts
 )
 
@@ -328,6 +333,11 @@ var keyOfText = [numTexts]string{
 	"chooseFolderUnavailable",
 	"webTitle",
 	"webDetail",
+	"menuSettings",
+	"menuEdit",
+	"menuView",
+	"menuWindow",
+	"menuShowSidebar",
 }
 
 // textsEn are the messages without arguments in en.
@@ -453,7 +463,12 @@ var textsEn = i18n.NewTexts(""+
 	"Resize sidebar"+
 	"That folder cannot be used on this platform."+
 	"Browser build"+
-	"Receiving and device discovery need native sockets. Use the desktop, iOS or Android app to move files.",
+	"Receiving and device discovery need native sockets. Use the desktop, iOS or Android app to move files."+
+	"Settings…"+
+	"Edit"+
+	"View"+
+	"Window"+
+	"Show Sidebar",
 	[]uint16{
 		9,
 		42,
@@ -577,6 +592,11 @@ var textsEn = i18n.NewTexts(""+
 		44,
 		13,
 		102,
+		11,
+		4,
+		4,
+		6,
+		12,
 	})
 
 // textsZhHans are the messages without arguments in zh-Hans.
@@ -702,7 +722,12 @@ var textsZhHans = i18n.NewTexts(""+
 	"调整侧边栏宽度"+
 	"此平台无法使用该文件夹。"+
 	"网页版本"+
-	"接收文件与发现设备需要原生网络套接字。请使用桌面、iOS 或 Android 应用传输文件。",
+	"接收文件与发现设备需要原生网络套接字。请使用桌面、iOS 或 Android 应用传输文件。"+
+	"设置…"+
+	"编辑"+
+	"显示"+
+	"窗口"+
+	"显示侧边栏",
 	[]uint16{
 		9,
 		36,
@@ -826,6 +851,11 @@ var textsZhHans = i18n.NewTexts(""+
 		36,
 		12,
 		112,
+		9,
+		6,
+		6,
+		6,
+		15,
 	})
 
 // texts returns the messages without arguments in lang, nil for a
@@ -2140,3 +2170,38 @@ func WebDetail(cx *core.Scope) string { return For(cx).WebDetail() }
 
 // WebDetail is the package's WebDetail in the language of msgs.
 func (msgs Messages) WebDetail() string { return msgs.text(textWebDetail) }
+
+// MenuSettings says "Settings…"
+// in the language the app shows under cx.
+func MenuSettings(cx *core.Scope) string { return For(cx).MenuSettings() }
+
+// MenuSettings is the package's MenuSettings in the language of msgs.
+func (msgs Messages) MenuSettings() string { return msgs.text(textMenuSettings) }
+
+// MenuEdit says "Edit"
+// in the language the app shows under cx.
+func MenuEdit(cx *core.Scope) string { return For(cx).MenuEdit() }
+
+// MenuEdit is the package's MenuEdit in the language of msgs.
+func (msgs Messages) MenuEdit() string { return msgs.text(textMenuEdit) }
+
+// MenuView says "View"
+// in the language the app shows under cx.
+func MenuView(cx *core.Scope) string { return For(cx).MenuView() }
+
+// MenuView is the package's MenuView in the language of msgs.
+func (msgs Messages) MenuView() string { return msgs.text(textMenuView) }
+
+// MenuWindow says "Window"
+// in the language the app shows under cx.
+func MenuWindow(cx *core.Scope) string { return For(cx).MenuWindow() }
+
+// MenuWindow is the package's MenuWindow in the language of msgs.
+func (msgs Messages) MenuWindow() string { return msgs.text(textMenuWindow) }
+
+// MenuShowSidebar says "Show Sidebar"
+// in the language the app shows under cx.
+func MenuShowSidebar(cx *core.Scope) string { return For(cx).MenuShowSidebar() }
+
+// MenuShowSidebar is the package's MenuShowSidebar in the language of msgs.
+func (msgs Messages) MenuShowSidebar() string { return msgs.text(textMenuShowSidebar) }

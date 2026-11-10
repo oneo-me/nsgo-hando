@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -131,6 +132,9 @@ type app struct {
 	settings  *core.Signal[settings]
 	favorites *core.Signal[[]localsend.Device]
 	devices   *core.Signal[[]localsend.Device]
+	nearby    *core.Memo[[]localsend.Device]
+	wide      *core.Memo[bool]
+	hosts     *core.Memo[[]string]
 	transfers *core.Signal[[]*transfer]
 	history   *core.Signal[[]transfer]
 	page      *core.Signal[string]
@@ -175,7 +179,9 @@ func Root(cx *core.Scope) core.Node {
 	a := newApp(cx)
 	return core.Dynamic(func(cx *core.Scope) core.Node {
 		i18n.Language(cx)
-		wide := cx.Env().Window().Width >= desktopWidth
+		// Only crossing the breakpoint rebuilds the shell; every other
+		// resize lays the same tree out again.
+		wide := a.wide.Get()
 		// The shell mounts outside the dynamic's own reads, so a keystroke
 		// that changes a signal read while building it (this device's
 		// name, for one) restyles the controls in place rather than
@@ -193,6 +199,8 @@ func newApp(cx *core.Scope) *app {
 	a.settings = core.NewSignal(cx, s)
 	a.favorites = core.NewSignalFunc(cx, loadFavorites(cx), nil)
 	a.devices = core.NewSignalFunc(cx, []localsend.Device(nil), nil)
+	a.nearby = core.NewMemoFunc(cx, a.mergeDevices, sameDevices)
+	a.wide = core.NewMemo(cx, func() bool { return cx.Env().Window().Width >= desktopWidth })
 	a.transfers = core.NewSignalFunc(cx, []*transfer(nil), nil)
 	a.history = core.NewSignalFunc(cx, loadHistory(cx), nil)
 	a.page = core.NewSignal(cx, "nearby")
@@ -200,6 +208,12 @@ func newApp(cx *core.Scope) *app {
 	a.nodeReady = core.NewSignal(cx, false)
 	a.serverErr = core.NewSignal(cx, "")
 	a.networkErr = core.NewSignal(cx, "")
+	a.hosts = core.NewMemoFunc(cx, func() []string {
+		// Listing the interfaces is a system call per interface; do it once
+		// each time the receiver comes up rather than on every read.
+		_ = a.nodeReady.Get()
+		return a.localAddresses()
+	}, slices.Equal[[]string])
 	a.incoming = core.NewSignal[*incomingRequest](cx, nil)
 	a.pinPrompt = core.NewSignal[*pinPrompt](cx, nil)
 	a.pinValue = core.NewSignal(cx, "")
@@ -225,6 +239,7 @@ func newApp(cx *core.Scope) *app {
 
 	cx.SetTheme(appTheme())
 	a.applyPreferences(cx, s)
+	a.installMenu(cx)
 	cx.Effect(func() {
 		next := a.settings.Get()
 		a.alias.Store(next.Alias)
@@ -521,15 +536,43 @@ func (a *app) addDevice(d localsend.Device) {
 	if d.LastSeen.IsZero() {
 		d.LastSeen = time.Now()
 	}
-	a.devices.Update(func(list []localsend.Device) []localsend.Device {
-		for i := range list {
-			if strings.EqualFold(list[i].Fingerprint, d.Fingerprint) {
-				list[i] = d
-				return list
+	// Peers answer every announcement and scan; one that says nothing new
+	// leaves the list alone, so the screen does not rebuild for it.
+	list := a.devices.GetUntracked()
+	for i := range list {
+		if strings.EqualFold(list[i].Fingerprint, d.Fingerprint) {
+			if sameDevice(list[i], d) {
+				return
 			}
+			next := append([]localsend.Device(nil), list...)
+			next[i] = d
+			a.devices.Set(next)
+			return
 		}
-		return append(list, d)
-	})
+	}
+	a.devices.Set(append(append([]localsend.Device(nil), list...), d))
+}
+
+// sameDevice reports whether two records of a device show the same.
+func sameDevice(x, y localsend.Device) bool {
+	if online(x) != online(y) {
+		return false
+	}
+	x.LastSeen, y.LastSeen = time.Time{}, time.Time{}
+	return x == y
+}
+
+// sameDevices reports whether two device lists show the same.
+func sameDevices(x, y []localsend.Device) bool {
+	if len(x) != len(y) {
+		return false
+	}
+	for i := range x {
+		if !sameDevice(x[i], y[i]) {
+			return false
+		}
+	}
+	return true
 }
 
 // isSelf reports whether d is this device.
@@ -581,9 +624,13 @@ func (a *app) toggleFavorite(d localsend.Device) {
 	a.favorites.Set(out)
 }
 
-// mergedDevices are favorites and discovered devices for the nearby list:
-// favorites first, online before offline, by name.
-func (a *app) mergedDevices() []localsend.Device {
+// mergedDevices are favorites and discovered devices for the nearby list,
+// recomputed only when either changes.
+func (a *app) mergedDevices() []localsend.Device { return a.nearby.Get() }
+
+// mergeDevices merges favorites and discovered devices: favorites first,
+// online before offline, by name.
+func (a *app) mergeDevices() []localsend.Device {
 	discovered := a.devices.Get()
 	byFP := make(map[string]localsend.Device, len(discovered))
 	for _, d := range discovered {
@@ -594,9 +641,7 @@ func (a *app) mergedDevices() []localsend.Device {
 	for _, f := range a.favorites.Get() {
 		key := strings.ToUpper(f.Fingerprint)
 		device, online := byFP[key]
-		if online {
-			device.LastSeen = time.Now()
-		} else {
+		if !online {
 			device = f
 		}
 		device.Favorite = true
