@@ -1,0 +1,28 @@
+---
+import Icon from './Icon.astro';
+import { copies } from '../copy';
+import { links, type Lang } from '../site';
+
+interface Props {
+  lang: Lang;
+  class?: string;
+  /** The label to start with, before the device's OS is known. */
+  label?: string;
+  size?: 'regular' | 'large';
+  icon?: boolean;
+}
+
+const { lang, class: className, label, size = 'regular', icon = true } = Astro.props;
+const copy = copies[lang];
+const labels = JSON.stringify(copy.common.downloadFor);
+---
+
+<a
+  class:list={['btn', 'btn--primary', size === 'large' && 'btn--large', className]}
+  href={links.releases}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  {icon && <Icon name="download" size={17} />}
+  <span data-download-label data-os-labels={labels}>{label ?? copy.common.download}</span>
+</a>

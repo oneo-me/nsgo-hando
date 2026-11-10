@@ -1,0 +1,617 @@
+---
+import { Image } from 'astro:assets';
+import DownloadLink from '../../components/DownloadLink.astro';
+import Icon from '../../components/Icon.astro';
+import Logo from '../../components/Logo.astro';
+import Layout from '../../layouts/Layout.astro';
+import { copies } from '../../copy';
+import { langOf, langPaths, links, pageUrl, platforms } from '../../site';
+import icon from '../../assets/icon.png';
+import androidEn from '../../assets/screens/android-en.png';
+import androidZh from '../../assets/screens/android-zh-Hans.png';
+import iosEn from '../../assets/screens/ios-en.png';
+import iosZh from '../../assets/screens/ios-zh-Hans.png';
+import macEn from '../../assets/screens/macos-en.png';
+import macZh from '../../assets/screens/macos-zh-Hans.png';
+
+export const getStaticPaths = () => langPaths();
+
+const lang = langOf(Astro.params.lang);
+const copy = copies[lang];
+const home = copy.home;
+const mock = copy.mock;
+const mac = lang === 'zh' ? macZh : macEn;
+const ios = lang === 'zh' ? iosZh : iosEn;
+const android = lang === 'zh' ? androidZh : androidEn;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Hando',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'macOS, Windows, Linux, Android, iOS',
+  description: copy.home.description,
+  url: new URL(pageUrl(lang, 'home'), Astro.site),
+  downloadUrl: links.releases,
+  license: links.license,
+  sameAs: [links.repo],
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  inLanguage: lang === 'zh' ? 'zh-CN' : 'en',
+};
+---
+
+<Layout
+  lang={lang}
+  page="home"
+  path=""
+  over
+  title={home.title}
+  description={home.description}
+>
+  <section class="hero">
+    <div class="container hero__inner">
+      <div class="hero__copy">
+        <span class="hero__badge">
+          <span class="hero__badge-dot" aria-hidden="true"></span>
+          {home.hero.badge}
+        </span>
+        <h1>{home.hero.title[0]}<span>{home.hero.title[1]}</span></h1>
+        <p class="hero__lead">{home.hero.lead}</p>
+        <div class="hero__actions">
+          <DownloadLink lang={lang} size="large" />
+          <a class="btn btn--on-forest btn--large" href="#how">
+            {home.hero.how}
+            <Icon name="arrow-right" size={16} />
+          </a>
+        </div>
+        <p class="hero__note">{home.hero.note}</p>
+      </div>
+
+      <div class="hero__stage">
+        <div class="stage__mac">
+          <Image
+            src={mac}
+            alt={home.hero.macAlt}
+            widths={[560, 840, 1120]}
+            sizes="(max-width: 960px) 82vw, 540px"
+            format="webp"
+            quality={84}
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+        <div class="stage__phone">
+          <Image
+            src={ios}
+            alt={home.hero.phoneAlt}
+            widths={[180, 270, 360]}
+            sizes="(max-width: 960px) 26vw, 170px"
+            format="webp"
+            quality={82}
+            loading="eager"
+          />
+        </div>
+
+        <svg class="stage__route" viewBox="0 0 600 560" aria-hidden="true" focusable="false">
+          <path d="M 300 398 C 400 408, 408 245, 500 232"></path>
+        </svg>
+        <span class="stage__packet" aria-hidden="true"><Icon name="file" size={13} /></span>
+
+        <span class="stage__nearby" aria-hidden="true">
+          <Icon name="wifi" size={13} />
+          {home.hero.nearby}
+        </span>
+
+        <div class="stage__sending" aria-hidden="true">
+          <div class="stage__sending-head">
+            <span class="stage__tile"><Icon name="send" size={13} /></span>
+            <span>{home.hero.sending}</span>
+          </div>
+          <div class="stage__sending-file">
+            <Icon name="file" size={12} />
+            <strong>{home.hero.file}</strong>
+            <em>{home.hero.size}</em>
+          </div>
+          <div class="stage__bar" aria-hidden="true"><i></i></div>
+          <div class="stage__sending-foot">
+            <Icon name="shield" size={11} />
+            {home.hero.verified} · {home.hero.progress}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="facts">
+    <div class="container">
+      <h2 class="sr-only">{home.factsTitle}</h2>
+      <div class="facts__card" data-reveal>
+        {home.facts.map((fact, index) => (
+          <article class="fact">
+            <span class="fact__icon">
+              <Icon name={index === 0 ? 'wifi' : index === 1 ? 'shield' : 'link'} size={17} />
+            </span>
+            <h3>{fact.title}</h3>
+            <p>{fact.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="how">
+    <div class="container">
+      <header class="section-head section-head--center" data-reveal>
+        <span class="eyebrow">{home.how.eyebrow}</span>
+        <h2>{home.how.title}</h2>
+        <p class="lead">{home.how.lead}</p>
+      </header>
+
+      <ol class="steps">
+        <li class="step" data-reveal>
+          <div class="step__visual" aria-hidden="true">
+            <div class="radar">
+              <span class="radar__ring radar__ring--1"></span>
+              <span class="radar__ring radar__ring--2"></span>
+              <span class="radar__ring radar__ring--3"></span>
+              <span class="radar__core"><Icon name="wifi" size={18} /></span>
+              <span class="radar__device radar__device--a">
+                <span><Icon name="laptop" size={11} /></span>{mock.mac}
+              </span>
+              <span class="radar__device radar__device--b">
+                <span><Icon name="smartphone" size={11} /></span>{mock.iphone}
+              </span>
+              <span class="radar__device radar__device--c">
+                <span><Icon name="terminal" size={11} /></span>{mock.pc}
+              </span>
+            </div>
+          </div>
+          <span class="step__number">01</span>
+          <h3>{home.how.steps[0]!.title}</h3>
+          <p>{home.how.steps[0]!.body}</p>
+        </li>
+
+        <li class="step" data-reveal>
+          <div class="step__visual" aria-hidden="true">
+            <div class="picker">
+              <div class="picker__head">
+                <Icon name="send" size={12} />
+                {mock.iphone}
+                <span>HTTPS</span>
+              </div>
+              <div class="picker__row">
+                <span class="picker__row-icon"><Icon name="folder" size={11} /></span>
+                <strong>{mock.folder}</strong>
+                <em>24</em>
+              </div>
+              <div class="picker__row">
+                <span class="picker__row-icon"><Icon name="file" size={11} /></span>
+                <strong>contract.pdf</strong>
+                <em>840 KB</em>
+              </div>
+              <div class="picker__row">
+                <span class="picker__row-icon"><Icon name="message" size={11} /></span>
+                <strong>{mock.message}</strong>
+              </div>
+              <div class="picker__send">
+                <Icon name="shield" size={10} />
+                SHA-256
+                <b><Icon name="arrow-right" size={10} /></b>
+              </div>
+            </div>
+          </div>
+          <span class="step__number">02</span>
+          <h3>{home.how.steps[1]!.title}</h3>
+          <p>{home.how.steps[1]!.body}</p>
+        </li>
+
+        <li class="step" data-reveal>
+          <div class="step__visual" aria-hidden="true">
+            <div class="progress-visual">
+              <span class="progress-visual__ring"><Icon name="check" size={24} /></span>
+              <span class="progress-visual__file">
+                <Icon name="shield" size={10} />
+                {mock.verified} · SHA-256
+              </span>
+            </div>
+          </div>
+          <span class="step__number">03</span>
+          <h3>{home.how.steps[2]!.title}</h3>
+          <p>{home.how.steps[2]!.body}</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section__soft" id="features">
+    <div class="container">
+      <header class="section-head" data-reveal>
+        <span class="eyebrow">{home.features.eyebrow}</span>
+        <h2>{home.features.title}</h2>
+        <p class="lead">{home.features.lead}</p>
+      </header>
+
+      <div class="bento">
+        <article class="feature feature--send feature--wide" data-reveal>
+          <div class="feature__copy">
+            <h3>{home.features.send.title}</h3>
+            <p>{home.features.send.body}</p>
+          </div>
+          <div class="feature__visual" aria-hidden="true">
+            <div class="mock">
+              <div class="mock__head">
+                <span class="mock__tile"><Icon name="send" size={13} /></span>
+                <span class="mock__who">
+                  <strong>{mock.sending}</strong>
+                  <span>{mock.iphone}</span>
+                </span>
+                <span class="mock__pill">HTTPS</span>
+              </div>
+              <div class="mock__row">
+                <span class="mock__row-icon"><Icon name="folder" size={11} /></span>
+                <strong>{mock.folder}</strong>
+                <em>1.2 GB</em>
+              </div>
+              <div class="mock__progress"><i></i></div>
+              <div class="mock__row">
+                <span class="mock__row-icon"><Icon name="file" size={11} /></span>
+                <strong>contract.pdf</strong>
+                <em>840 KB</em>
+              </div>
+              <div class="mock__row">
+                <span class="mock__row-icon"><Icon name="message" size={11} /></span>
+                <strong>{mock.message}</strong>
+              </div>
+              <div class="mock__foot">
+                <Icon name="shield" size={10} />
+                {home.hero.verified} · {home.hero.progress}
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="feature feature--favorites feature--wide" data-reveal>
+          <div class="feature__copy">
+            <h3>{home.features.favorites.title}</h3>
+            <p>{home.features.favorites.body}</p>
+          </div>
+          <div class="feature__visual" aria-hidden="true">
+            <div class="mock devices-mock">
+              <div class="mock__head">
+                <span class="mock__tile"><Icon name="star" size={13} /></span>
+                <span class="mock__who">
+                  <strong>{mock.nearby}</strong>
+                  <span>{mock.online}</span>
+                </span>
+                <span class="mock__pill">HTTPS</span>
+              </div>
+              <div class="mock__row">
+                <span class="mock__row-icon"><Icon name="smartphone" size={11} /></span>
+                <strong>{mock.iphone}</strong>
+                <Icon name="star-filled" size={12} class="mock__star" />
+              </div>
+              <div class="mock__row">
+                <span class="mock__row-icon"><Icon name="terminal" size={11} /></span>
+                <strong>{mock.server}</strong>
+                <Icon name="star-filled" size={12} class="mock__star" />
+              </div>
+              <div class="quick-save">
+                <Icon name="check" size={10} />
+                {mock.quickSave}
+                <span class="mock__pill">On</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="feature feature--pin" data-reveal>
+          <div class="feature__copy">
+            <h3>{home.features.pin.title}</h3>
+            <p>{home.features.pin.body}</p>
+          </div>
+          <div class="feature__visual" aria-hidden="true">
+            <div class="pin-panel">
+              <span class="pin-panel__dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+              <span class="pin-panel__label"><Icon name="lock" size={10} />{mock.pin}</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="feature feature--checksum" data-reveal>
+          <div class="feature__copy">
+            <h3>{home.features.checksum.title}</h3>
+            <p>{home.features.checksum.body}</p>
+          </div>
+          <div class="feature__visual" aria-hidden="true">
+            <div class="hash-panel">
+              <strong>9C4A · 7B2D · 4F8E</strong>
+              <span class="hash-panel__verified"><Icon name="check" size={9} />{mock.verified}</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="feature feature--history" data-reveal>
+          <div class="feature__copy">
+            <h3>{home.features.history.title}</h3>
+            <p>{home.features.history.body}</p>
+          </div>
+          <div class="feature__visual" aria-hidden="true">
+            <div class="history-panel">
+              <div class="mock__row">
+                <span class="mock__row-icon"><Icon name="folder" size={10} /></span>
+                <strong>{mock.folder}</strong>
+                <Icon name="check" size={11} class="mock__star" />
+              </div>
+              <div class="mock__row">
+                <span class="mock__row-icon"><Icon name="file" size={10} /></span>
+                <strong>contract.pdf</strong>
+                <Icon name="check" size={11} class="mock__star" />
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="feature feature--calm" data-reveal>
+          <div class="feature__copy">
+            <h3>{home.features.calm.title}</h3>
+            <p>{home.features.calm.body}</p>
+          </div>
+          <div class="feature__visual" aria-hidden="true">
+            <div class="calm-panel">
+              <span class="calm-panel__pane">
+                <span class="calm-panel__bar"></span>{mock.light}
+              </span>
+              <span class="calm-panel__pane calm-panel__pane--dark">
+                <span class="calm-panel__bar"></span>{mock.dark}
+              </span>
+              <span class="calm-panel__lang">
+                <span>EN</span>
+                <span>中文</span>
+              </span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="screens">
+    <div class="container">
+      <header class="section-head section-head--center" data-reveal>
+        <span class="eyebrow">{home.screens.eyebrow}</span>
+        <h2>{home.screens.title}</h2>
+        <p class="lead">{home.screens.lead}</p>
+      </header>
+
+      <div class="screens" data-tabs data-reveal>
+        <div class="tabs" role="tablist" aria-label={home.screens.eyebrow}>
+          <button
+            type="button"
+            class="tab"
+            role="tab"
+            id="tab-macos"
+            aria-controls="panel-macos"
+            aria-selected="true"
+            tabindex="0">{home.screens.tabs.macos}</button
+          >
+          <button
+            type="button"
+            class="tab"
+            role="tab"
+            id="tab-ios"
+            aria-controls="panel-ios"
+            aria-selected="false"
+            tabindex="-1">{home.screens.tabs.ios}</button
+          >
+          <button
+            type="button"
+            class="tab"
+            role="tab"
+            id="tab-android"
+            aria-controls="panel-android"
+            aria-selected="false"
+            tabindex="-1">{home.screens.tabs.android}</button
+          >
+        </div>
+
+        <div class="screen-panel" role="tabpanel" id="panel-macos" aria-labelledby="tab-macos">
+          <figure class="screen-stage screen-stage--desktop">
+            <div class="screen-stage__image">
+              <Image
+                src={mac}
+                alt={home.screens.alts.macos}
+                widths={[720, 1080, 1440, 1800]}
+                sizes="(max-width: 760px) 92vw, 900px"
+                format="webp"
+                quality={84}
+                loading="lazy"
+              />
+            </div>
+          </figure>
+          <p class="screen-caption">{home.screens.captions.macos}</p>
+        </div>
+
+        <div class="screen-panel" role="tabpanel" id="panel-ios" aria-labelledby="tab-ios" hidden>
+          <figure class="screen-stage screen-stage--phone">
+            <div class="screen-stage__image">
+              <Image
+                src={ios}
+                alt={home.screens.alts.ios}
+                widths={[280, 420, 560, 660]}
+                sizes="(max-width: 760px) 78vw, 330px"
+                format="webp"
+                quality={82}
+                loading="lazy"
+              />
+            </div>
+          </figure>
+          <p class="screen-caption">{home.screens.captions.ios}</p>
+        </div>
+
+        <div class="screen-panel" role="tabpanel" id="panel-android" aria-labelledby="tab-android" hidden>
+          <figure class="screen-stage screen-stage--phone">
+            <div class="screen-stage__image">
+              <Image
+                src={android}
+                alt={home.screens.alts.android}
+                widths={[280, 420, 560, 660]}
+                sizes="(max-width: 760px) 78vw, 330px"
+                format="webp"
+                quality={82}
+                loading="lazy"
+              />
+            </div>
+          </figure>
+          <p class="screen-caption">{home.screens.captions.android}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="compatibility">
+    <div class="container">
+      <div class="compat">
+        <div data-reveal>
+          <span class="eyebrow">{home.compatibility.eyebrow}</span>
+          <h2>{home.compatibility.title}</h2>
+          <p class="lead">{home.compatibility.lead}</p>
+        </div>
+
+        <div class="handoff" data-reveal>
+          <div class="handoff__node">
+            <Logo size={30} wordmark={false} />
+            <span class="handoff__name">Hando</span>
+            <span class="handoff__note">HTTPS · mutual TLS</span>
+          </div>
+          <div class="handoff__route" aria-hidden="true">
+            <span class="handoff__line"></span>
+            <span class="handoff__chip">{home.compatibility.protocol}</span>
+          </div>
+          <div class="handoff__node">
+            <span class="handoff__localsend"><Icon name="send" size={15} /></span>
+            <span class="handoff__name">LocalSend</span>
+            <span class="handoff__note">{home.compatibility.official}</span>
+          </div>
+        </div>
+      </div>
+
+      <dl class="specs" data-reveal>
+        {home.compatibility.specs.map((spec) => (
+          <div class="spec">
+            <dt>{spec.label}</dt>
+            <dd set:html={spec.value.replace(/(224\.0\.0\.167:53317)/g, '<code>$1</code>')} />
+          </div>
+        ))}
+      </dl>
+
+      <div class="compat__foot" data-reveal>
+        <span class="compat__tested">
+          <Icon name="check-circle" size={14} />
+          {home.compatibility.tested}
+        </span>
+        <span class="compat__links">
+          <a href={links.protocol} target="_blank" rel="noopener noreferrer">
+            {home.compatibility.protocolLink}
+            <Icon name="external" size={12} />
+          </a>
+          <a href={links.repo} target="_blank" rel="noopener noreferrer">
+            {copy.common.source}
+            <Icon name="external" size={12} />
+          </a>
+        </span>
+      </div>
+      <p class="compat__not-affiliated">{home.compatibility.notAffiliated}</p>
+    </div>
+  </section>
+
+  <section class="section" id="privacy">
+    <div class="container">
+      <div class="privacy">
+        <div data-reveal>
+          <span class="eyebrow">{home.privacy.eyebrow}</span>
+          <h2>{home.privacy.title.map((line) => <span>{line}</span>)}</h2>
+          <p class="lead">{home.privacy.lead}</p>
+          <ul class="privacy__points">
+            {home.privacy.points.map((point) => (
+              <li><Icon name="check" size={15} />{point}</li>
+            ))}
+          </ul>
+          <a class="privacy__link" href={pageUrl(lang, 'privacy')}>
+            {home.privacy.link}
+            <Icon name="arrow-right" size={15} />
+          </a>
+        </div>
+
+        <div class="local-route" data-reveal aria-hidden="true">
+          <span class="local-route__cloud"><Icon name="cloud-off" size={12} />{mock.noCloud}</span>
+          <div class="local-route__map">
+            <span class="local-route__device">
+              <span class="local-route__tile"><Icon name="laptop" size={16} /></span>
+              {mock.mac}
+            </span>
+            <span class="local-route__wire" aria-hidden="true"><i></i></span>
+            <span class="local-route__device">
+              <span class="local-route__tile"><Icon name="smartphone" size={16} /></span>
+              {mock.iphone}
+            </span>
+          </div>
+          <div class="local-route__foot">
+            <span><Icon name="wifi" size={11} />{mock.localNetwork}</span>
+            <span><Icon name="lock" size={11} />TLS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="download-cta" id="download">
+    <div class="container">
+      <div class="download-cta__panel" data-reveal>
+        <div class="download-cta__copy">
+          <span class="eyebrow">{home.download.eyebrow}</span>
+          <h2>{home.download.title}</h2>
+          <p class="lead">{home.download.lead}</p>
+          <div class="download-cta__actions">
+            <DownloadLink lang={lang} size="large" />
+            <a
+              class="download-cta__all"
+              href={links.allReleases}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {home.download.all}
+              <Icon name="arrow-up-right" size={14} />
+            </a>
+          </div>
+        </div>
+        <div class="download-cta__aside">
+          <Image src={icon} alt="" width={126} height={126} class="download-cta__icon" loading="lazy" />
+          <span class="download-cta__platforms">
+            {platforms.map((platform) => platform.name).join(' · ')}
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="faq">
+        <div class="faq__head" data-reveal>
+          <span class="eyebrow">{home.faq.eyebrow}</span>
+          <h2>{home.faq.title}</h2>
+        </div>
+        <div class="faq__list" data-reveal>
+          {home.faq.items.map((item) => (
+            <details class="faq__item">
+              <summary>{item.q}</summary>
+              <p>{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</Layout>

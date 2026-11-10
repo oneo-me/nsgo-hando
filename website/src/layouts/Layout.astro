@@ -1,0 +1,127 @@
+---
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { copies } from '../copy';
+import { localePath, type Lang, type PageId } from '../site';
+import '../styles/global.css';
+
+interface Props {
+  lang: Lang;
+  /** The current page, which the header links back to. */
+  page?: PageId;
+  title: string;
+  description: string;
+  /** The path below the language, which the language link keeps. */
+  path: string;
+  /** The header floats over the dark hero instead of sitting on paper. */
+  over?: boolean;
+  /** Keep a page, such as the 404, out of search results. */
+  noIndex?: boolean;
+}
+
+const { lang, page, title, description, path, over = false, noIndex = false } = Astro.props;
+const copy = copies[lang];
+const base = import.meta.env.BASE_URL;
+const site = Astro.site ?? new URL('https://oneo-me.github.io');
+const canonical = new URL(localePath(lang, path), site);
+const image = new URL(`${base}og.png`, site);
+const zhPath = page ? localePath('zh', path) : null;
+const altPath = page ? localePath(lang === 'en' ? 'zh' : 'en', path) : null;
+---
+
+<!doctype html>
+<html lang={lang === 'zh' ? 'zh-CN' : 'en'} data-theme="light" data-page={page ?? 'not-found'}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f6f8f5" />
+    <link rel="icon" type="image/png" sizes="256x256" href={`${base}icon.png`} />
+    <link rel="apple-touch-icon" href={`${base}apple-touch-icon.png`} />
+    <link rel="manifest" href={`${base}site.webmanifest`} />
+    <noscript>
+      <style>
+        [data-tabs] [role='tablist'] { display: none; }
+        [data-tabs] [role='tabpanel'][hidden] { display: block !important; }
+        [data-tabs] [role='tabpanel'] + [role='tabpanel'] { margin-top: 28px; }
+      </style>
+    </noscript>
+    {!noIndex && <link rel="canonical" href={canonical} />}
+    {page && <link rel="alternate" hreflang={lang === 'zh' ? 'zh-CN' : 'en'} href={canonical} />}
+    {altPath && <link rel="alternate" hreflang={lang === 'en' ? 'zh-CN' : 'en'} href={new URL(altPath, site)} />}
+    {page && <link rel="alternate" hreflang="x-default" href={new URL(localePath('en', path), site)} />}
+    {noIndex && <meta name="robots" content="noindex" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Hando" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Hando — private file sharing on your local network" />
+    <meta property="og:locale" content={lang === 'zh' ? 'zh_CN' : 'en_US'} />
+    {altPath && <meta property="og:locale:alternate" content={lang === 'en' ? 'zh_CN' : 'en_US'} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+
+    <script is:inline define:vars={{ lang, zhPath }}>
+      // Apply the stored appearance, and the system's unless one is chosen,
+      // before the first paint. Then label downloads for this device and, on
+      // a first visit from a Chinese browser, open the Chinese page. A
+      // choice made with the language link is kept in `hando-lang`.
+      (function () {
+        var root = document.documentElement;
+        var pref = null;
+        try {
+          pref = localStorage.getItem('hando-theme');
+        } catch (error) {}
+        if (pref !== 'light' && pref !== 'dark' && pref !== 'system') pref = 'system';
+        var media = window.matchMedia('(prefers-color-scheme: dark)');
+        var theme = pref === 'dark' || (pref === 'system' && media.matches) ? 'dark' : 'light';
+        root.dataset.theme = theme;
+        root.dataset.themePreference = pref;
+        root.style.colorScheme = theme;
+        var color = document.querySelector('meta[name="theme-color"]');
+        if (color) color.setAttribute('content', theme === 'dark' ? '#0b1310' : '#f6f8f5');
+
+        var os = 'other';
+        var ua = navigator.userAgent || '';
+        var platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
+        if (/android/i.test(ua)) os = 'android';
+        else if (/iPhone|iPad|iPod/i.test(ua) || (/Mac/i.test(platform) && navigator.maxTouchPoints > 1)) os = 'ios';
+        else if (/Win/i.test(platform) || /Windows/i.test(ua)) os = 'windows';
+        else if (/Mac/i.test(platform) || /Mac OS X/i.test(ua)) os = 'macos';
+        else if (/Linux|X11/i.test(platform) || /Linux/i.test(ua)) os = 'linux';
+        root.dataset.os = os;
+
+        var choice = null;
+        try {
+          choice = localStorage.getItem('hando-lang');
+        } catch (error) {}
+        if (lang !== 'en' || !zhPath || choice === 'en') return;
+        var languages = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
+        var chinese = languages.some(function (language) {
+          return String(language).toLowerCase().indexOf('zh') === 0;
+        });
+        if (!choice && chinese) location.replace(zhPath + location.hash);
+      })();
+    </script>
+  </head>
+  <body class:list={[over && 'has-over-header']}>
+    <a class="skip-link" href="#main">{copy.nav.skip}</a>
+    <Header lang={lang} page={page} path={path} over={over} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <script>
+      import '../scripts/site';
+    </script>
+  </body>
+</html>

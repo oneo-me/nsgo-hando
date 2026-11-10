@@ -40,7 +40,7 @@
 
 ## Install
 
-Download the package for your platform from [Releases](https://github.com/oneo-me/nsgo-localsend/releases/latest):
+Download the package for your platform from [Releases](https://github.com/oneo-me/nsgo-hando/releases/latest):
 
 - macOS: `.dmg`
 - Windows: `-setup.exe`
@@ -72,6 +72,8 @@ go tool nsgo dev -target ios_simulator
 Read [ARCHITECTURE.md](ARCHITECTURE.md) before changing the protocol or the app's state, and [AGENTS.md](AGENTS.md) for the working rules. User-visible changes go in [CHANGELOG.md](CHANGELOG.md).
 
 To release, set `version` in `nsgo.yaml`, move `Unreleased` in `CHANGELOG.md` under that version and push the tag `v<version>`: CI builds every package on a Mac and publishes them as the tag's GitHub release, with that section as its notes.
+
+The website in [website/](website/README.md) is an Astro site deployed to GitHub Pages; run `bun install && bun run dev` there to preview it at `/nsgo-hando/`.
 
 ## License
 

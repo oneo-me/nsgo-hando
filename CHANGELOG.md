@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Add an official website for GitHub Pages, with downloads, compatibility and privacy pages in English and Chinese.
+
 ## [0.2026.1] - 2026-11-11
 
 The first release of Hando, a file sharing app for macOS, Windows, Linux, iOS and Android that works with LocalSend devices.

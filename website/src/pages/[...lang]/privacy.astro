@@ -1,0 +1,65 @@
+---
+import Icon from '../../components/Icon.astro';
+import Layout from '../../layouts/Layout.astro';
+import { copies } from '../../copy';
+import { langOf, langPaths, links } from '../../site';
+
+export const getStaticPaths = () => langPaths();
+
+const lang = langOf(Astro.params.lang);
+const copy = copies[lang];
+const p = copy.privacy;
+const summaryIcons = ['lock', 'eye-off', 'cloud-off'] as const;
+---
+
+<Layout
+  lang={lang}
+  page="privacy"
+  path="privacy/"
+  title={p.title}
+  description={p.description}
+>
+  <section class="page-hero page-hero--center">
+    <div class="container page-hero__inner">
+      <span class="eyebrow">{p.hero.eyebrow}</span>
+      <h1>{p.hero.title}</h1>
+      <p class="lead">{p.hero.lead}</p>
+    </div>
+  </section>
+
+  <section class="page-body">
+    <div class="container">
+      <div class="privacy-summary" data-reveal>
+        {p.summary.map((item, index) => (
+          <article>
+            <Icon name={summaryIcons[index]!} size={17} />
+            {item}
+          </article>
+        ))}
+      </div>
+
+      <div class="prose">
+        <section data-reveal>
+          <h2>{p.app.title}</h2>
+          {p.app.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+        </section>
+
+        <section data-reveal>
+          <h2>{p.website.title}</h2>
+          {p.website.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+        </section>
+
+        <div class="privacy-contact" data-reveal>
+          <div>
+            <h2>{p.contact.title}</h2>
+            <p>{p.contact.body}</p>
+          </div>
+          <a href={links.issues} target="_blank" rel="noopener noreferrer">
+            GitHub Issues
+            <Icon name="external" size={13} />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

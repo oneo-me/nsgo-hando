@@ -1,0 +1,22 @@
+{
+  "name": "hando-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check",
+    "og": "bun scripts/og.mjs",
+    "sync": "bun scripts/sync-assets.mjs"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.4.8"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5",
+    "typescript": "^6.0.0"
+  }
+}

@@ -40,7 +40,7 @@
 
 ## 安装
 
-从 [Releases](https://github.com/oneo-me/nsgo-localsend/releases/latest) 下载对应平台的安装包：
+从 [Releases](https://github.com/oneo-me/nsgo-hando/releases/latest) 下载对应平台的安装包：
 
 - macOS：`.dmg`
 - Windows：`-setup.exe`
@@ -72,6 +72,8 @@ go tool nsgo dev -target ios_simulator
 修改协议或应用状态前请阅读 [ARCHITECTURE.md](ARCHITECTURE.md)，工作规则见 [AGENTS.md](AGENTS.md)。用户可见的变化记录在 [CHANGELOG.md](CHANGELOG.md)。
 
 发布时修改 `nsgo.yaml` 的 `version`，把 `CHANGELOG.md` 的 `Unreleased` 移到该版本下，再推送标签 `v<version>`：CI 在 Mac 上构建所有安装包，发布为该标签的 GitHub Release，并以该版本的章节作为更新说明。
+
+[website/](website/README.md) 是用 Astro 构建、发布到 GitHub Pages 的官方网站；在其中运行 `bun install && bun run dev`，可在 `/nsgo-hando/` 下预览。
 
 ## 许可证
 

@@ -1,0 +1,85 @@
+---
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import { copies } from '../copy';
+import { homeAnchor, links, pageUrl, year, type Lang } from '../site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const copy = copies[lang].footer;
+const common = copies[lang].common;
+const home = pageUrl(lang, 'home');
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a class="brand" href={home} aria-label="Hando">
+          <Logo size={34} />
+        </a>
+        <p>{copy.tagline}</p>
+        <a class="footer__built" href={links.nsgo} target="_blank" rel="noopener noreferrer">
+          {copy.builtWith}
+          <Icon name="arrow-up-right" size={13} />
+        </a>
+      </div>
+
+      <nav class="footer__links">
+        <div class="footer__group">
+          <p class="footer__heading">{copy.product}</p>
+          <a href={homeAnchor(lang, 'features')}>{copy.features}</a>
+          <a href={homeAnchor(lang, 'compatibility')}>{copy.compatibility}</a>
+          <a href={pageUrl(lang, 'download')}>{copy.download}</a>
+          <a href={pageUrl(lang, 'privacy')}>{copy.privacy}</a>
+        </div>
+        <div class="footer__group">
+          <p class="footer__heading">{copy.project}</p>
+          <a href={links.repo} target="_blank" rel="noopener noreferrer">
+            {common.github}
+            <Icon name="external" size={12} />
+          </a>
+          <a href={links.changelog} target="_blank" rel="noopener noreferrer">
+            {copy.changelog}
+            <Icon name="external" size={12} />
+          </a>
+          <a href={links.license} target="_blank" rel="noopener noreferrer">
+            {copy.license}
+            <Icon name="external" size={12} />
+          </a>
+          <a href={links.protocol} target="_blank" rel="noopener noreferrer">
+            {copy.protocol}
+            <Icon name="external" size={12} />
+          </a>
+        </div>
+        <div class="footer__group">
+          <p class="footer__heading">{copy.elsewhere}</p>
+          <a href={links.blog} target="_blank" rel="noopener noreferrer">
+            {copy.blog}
+            <Icon name="external" size={12} />
+          </a>
+          <a href={links.x} target="_blank" rel="noopener noreferrer">
+            X
+            <Icon name="external" size={12} />
+          </a>
+          <a href={links.sponsor} target="_blank" rel="noopener noreferrer">
+            {copy.sponsor}
+            <Icon name="external" size={12} />
+          </a>
+          <a href={links.issues} target="_blank" rel="noopener noreferrer">
+            Issues
+            <Icon name="external" size={12} />
+          </a>
+        </div>
+      </nav>
+    </div>
+
+    <div class="footer__bottom">
+      <p>{copy.rights.replace('{year}', String(year))}</p>
+      <p>{copy.notAffiliated}</p>
+    </div>
+  </div>
+</footer>

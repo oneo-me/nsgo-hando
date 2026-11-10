@@ -33,4 +33,4 @@ android:
     - CHANGE_WIFI_MULTICAST_STATE
 
 release:
-  github: oneo-me/nsgo-localsend
+  github: oneo-me/nsgo-hando

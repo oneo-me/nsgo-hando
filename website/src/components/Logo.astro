@@ -1,0 +1,37 @@
+---
+interface Props {
+  size?: number;
+  wordmark?: boolean;
+  class?: string;
+}
+
+const { size = 28, wordmark = true, class: className } = Astro.props;
+---
+
+<span class:list={['logo', className]}>
+  <svg
+    class="logo__mark"
+    width={size}
+    height={size}
+    viewBox="0 0 32 32"
+    fill="none"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <rect width="32" height="32" rx="9" fill="#14352a"></rect>
+    <rect x=".5" y=".5" width="31" height="31" rx="8.5" stroke="rgba(45,212,167,.24)"></rect>
+    <g transform="rotate(-9 13 12.5)">
+      <rect x="6" y="6.5" width="13.2" height="13.2" rx="3.6" fill="#42d3a7"></rect>
+    </g>
+    <g transform="rotate(6 20 19.3)">
+      <rect x="13.2" y="12.8" width="13" height="13" rx="3.7" fill="#f3f8f5"></rect>
+      <path
+        d="M18.3 21.4 23 16.7M18.6 16.7h4.4v4.4"
+        stroke="#0e9f7c"
+        stroke-width="1.9"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </g>
+  </svg>
+  {wordmark && <span class="logo__name">Hando</span>}
+</span>

@@ -1,0 +1,36 @@
+---
+import Icon from '../components/Icon.astro';
+import Layout from '../layouts/Layout.astro';
+import { copies } from '../copy';
+import { pageUrl } from '../site';
+
+const lang = 'en' as const;
+const copy = copies[lang];
+const n = copy.notFound;
+---
+
+<Layout
+  lang={lang}
+  path=""
+  over
+  noIndex
+  title={n.title}
+  description={n.description}
+>
+  <section class="notfound">
+    <div class="container notfound__inner">
+      <p class="notfound__code" aria-hidden="true">404</p>
+      <h1>{n.heading}</h1>
+      <p class="notfound__body">{n.body}</p>
+      <div class="notfound__actions">
+        <a class="btn btn--primary btn--large" href={pageUrl(lang, 'home')}>
+          {copy.common.backHome}
+          <Icon name="arrow-right" size={15} />
+        </a>
+        <a class="btn btn--on-forest btn--large" href={pageUrl(lang, 'download')}>
+          {copy.nav.download}
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
