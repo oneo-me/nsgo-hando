@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="assets/Icon.png" alt="LocalSend" width="128">
+  <img src="assets/Icon.png" alt="Hando" width="128">
 </p>
 
-<h1 align="center">LocalSend</h1>
+<h1 align="center">Hando</h1>
 
 <p align="center">
   <strong>简体中文</strong> |
@@ -17,11 +17,11 @@
 </p>
 
 <p align="center">
-  使用 <a href="https://github.com/oneo-me/nsgo">NSGo</a> 构建的原生 LocalSend 客户端：在 macOS、Windows、Linux、iOS 和 Android 之间发现附近设备并发送文件、文件夹和消息，不需要服务器或账号。
+  使用 <a href="https://github.com/oneo-me/nsgo">NSGo</a> 构建的原生文件互传应用：在 macOS、Windows、Linux、iOS 和 Android 之间发现附近设备并发送文件、文件夹和消息，不需要服务器或账号。它使用 LocalSend 协议，可与官方 LocalSend 应用互传。
 </p>
 
 <p align="center">
-  <img src="assets/screenshot.png" alt="macOS 上的 LocalSend，附近有一台设备">
+  <img src="assets/screenshot.png" alt="macOS 上的 Hando，附近有一台设备">
 </p>
 
 ## 功能
@@ -45,16 +45,16 @@
 
 ## 开始使用
 
-1. 在两台连接到同一个 Wi-Fi 的设备上打开 LocalSend。
+1. 在两台连接到同一个 Wi-Fi 的设备上打开 Hando 或 LocalSend。
 2. 在 **附近设备** 中选择一台设备。
 3. 选择文件或文件夹，或写一条消息，然后按 **发送**。
 4. 在另一台设备上接收传输。
 
-桌面端的接收文件保存在 `Downloads/LocalSend`，手机端保存在应用文件夹。可在 **设置** 中修改保存文件夹、设备名称、端口、加密和接收 PIN。带星标的设备是收藏设备：离线时仍会显示，开启快速保存后无需确认即可接收它们的传输。
+桌面端的接收文件保存在 `Downloads/Hando`，手机端保存在应用文件夹。可在 **设置** 中修改保存文件夹、设备名称、端口、加密和接收 PIN。带星标的设备是收藏设备：离线时仍会显示，开启快速保存后无需确认即可接收它们的传输。
 
 ## 开发
 
-LocalSend on NSGo 需要 Go 1.26 或更高版本。Apple 平台需要 Xcode，Android 需要 Android SDK 的 platform-tools。
+Hando 需要 Go 1.26 或更高版本。Apple 平台需要 Xcode，Android 需要 Android SDK 的 platform-tools。
 
 ```sh
 go tool nsgo dev                    # 在本机运行
@@ -66,8 +66,10 @@ go tool nsgo dev -target ios_simulator
 
 修改协议或应用状态前请阅读 [ARCHITECTURE.md](ARCHITECTURE.md)，工作规则见 [AGENTS.md](AGENTS.md)。用户可见的变化记录在 [CHANGELOG.md](CHANGELOG.md)。
 
+发布时修改 `nsgo.yaml` 的 `version`，把 `CHANGELOG.md` 的 `Unreleased` 移到该版本下，再推送标签 `v<version>`：CI 在 Mac 上构建所有安装包，发布为该标签的 GitHub Release，并以该版本的章节作为更新说明。
+
 ## 许可证
 
-LocalSend on NSGo 使用 [MIT 许可证](LICENSE)。它实现了 [LocalSend 协议](https://github.com/localsend/protocol)，与 LocalSend 项目没有隶属关系。
+Hando 使用 [MIT 许可证](LICENSE)。它实现了 [LocalSend 协议](https://github.com/localsend/protocol)，与 LocalSend 项目没有隶属关系。
 
 除非你明确声明，否则任何有意提交以纳入本项目的贡献都应按 MIT 许可证授权，不附加任何额外条款或条件。

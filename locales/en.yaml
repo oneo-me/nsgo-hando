@@ -1,5 +1,5 @@
 appName:
-  message: LocalSend
+  message: Hando
   description: The app's name, which its packages list it under in each language.
 tagline: Private file sharing on your local network
 tabNearby: Nearby
@@ -13,7 +13,7 @@ you: You
 online: Online
 offline: Offline
 nearbyEmpty: No devices nearby
-nearbyEmptyDetail: Make sure the other device is on the same Wi-Fi and has LocalSend open.
+nearbyEmptyDetail: Make sure the other device is on the same Wi-Fi and has Hando or LocalSend open.
 
 onlineCount:
   message: "{count, plural, =0 {No devices online} one {1 device online} other {# devices online}}"
@@ -76,7 +76,7 @@ deviceTypeServer: Server
 settingsNetwork: Network
 settingsNetworkDetail: Where other devices reach this one.
 port: Port
-portDetail: LocalSend uses 53317 by default. Both devices must use the same port.
+portDetail: LocalSend devices use 53317 by default. Both devices must use the same port.
 encryption: Encryption
 encryptionDetail: HTTPS encrypts transfers. Turn it off to work with older setups.
 encryptionOn: On (HTTPS)
@@ -133,7 +133,7 @@ close: Close
 retry: Retry
 message: Message
 textMessage: Text message
-aboutDetail: A native LocalSend client built with NSGo.
+aboutDetail: A native file sharing app built with NSGo, compatible with LocalSend.
 savedTo: "Saved to {path}"
 open: Open
 linkLocal: Local network

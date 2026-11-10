@@ -1,6 +1,6 @@
-# LocalSend on NSGo
+# Hando
 
-LocalSend on NSGo is a cross-platform LocalSend client built with NSGo. Read [ARCHITECTURE.md](ARCHITECTURE.md) before coding, then the code around the part you change.
+Hando is a cross-platform file sharing app built with NSGo, compatible with LocalSend. Read [ARCHITECTURE.md](ARCHITECTURE.md) before coding, then the code around the part you change.
 
 ## Principles
 

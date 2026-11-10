@@ -1,5 +1,5 @@
 appName:
-  message: LocalSend
+  message: Hando
   description: 应用名称，各语言都这么叫。
 tagline: 在局域网内私密地传输文件
 tabNearby: 附近
@@ -13,7 +13,7 @@ you: 你
 online: 在线
 offline: 离线
 nearbyEmpty: 附近没有设备
-nearbyEmptyDetail: 请确认另一台设备连接了同一个 Wi-Fi，并已打开 LocalSend。
+nearbyEmptyDetail: 请确认另一台设备连接了同一个 Wi-Fi，并已打开 Hando 或 LocalSend。
 
 onlineCount:
   message: "{count, plural, =0 {没有设备在线} other {# 台设备在线}}"
@@ -76,7 +76,7 @@ deviceTypeServer: 服务器
 settingsNetwork: 网络
 settingsNetworkDetail: 其他设备连接本机的方式。
 port: 端口
-portDetail: LocalSend 默认使用 53317。两台设备必须使用相同端口。
+portDetail: LocalSend 设备默认使用 53317。两台设备必须使用相同端口。
 encryption: 加密
 encryptionDetail: HTTPS 会加密传输。关闭后可兼容较旧的设置。
 encryptionOn: 开启（HTTPS）
@@ -133,7 +133,7 @@ close: 关闭
 retry: 重试
 message: 消息
 textMessage: 文字消息
-aboutDetail: 使用 NSGo 构建的原生 LocalSend 客户端。
+aboutDetail: 使用 NSGo 构建的原生文件互传应用，与 LocalSend 兼容。
 savedTo: "已保存到 {path}"
 open: 打开
 linkLocal: 局域网

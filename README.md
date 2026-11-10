@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="assets/Icon.png" alt="LocalSend" width="128">
+  <img src="assets/Icon.png" alt="Hando" width="128">
 </p>
 
-<h1 align="center">LocalSend</h1>
+<h1 align="center">Hando</h1>
 
 <p align="center">
   <strong>English</strong> |
@@ -17,11 +17,11 @@
 </p>
 
 <p align="center">
-  A native LocalSend client built with <a href="https://github.com/oneo-me/nsgo">NSGo</a>: find nearby devices and send files, folders and messages across macOS, Windows, Linux, iOS and Android, without a server or an account.
+  A native file sharing app built with <a href="https://github.com/oneo-me/nsgo">NSGo</a>: find nearby devices and send files, folders and messages across macOS, Windows, Linux, iOS and Android, without a server or an account. It speaks the LocalSend protocol, so it works with the official LocalSend apps.
 </p>
 
 <p align="center">
-  <img src="assets/screenshot.png" alt="LocalSend on macOS, with a nearby device">
+  <img src="assets/screenshot.png" alt="Hando on macOS, with a nearby device">
 </p>
 
 ## Features
@@ -45,16 +45,16 @@ Download the package for your platform from [Releases](https://github.com/oneo-m
 
 ## Getting started
 
-1. Open LocalSend on two devices connected to the same Wi-Fi.
+1. Open Hando, or LocalSend, on two devices connected to the same Wi-Fi.
 2. Choose a device under **Nearby devices**.
 3. Pick files or a folder, or write a message, then press **Send**.
 4. Accept the transfer on the other device.
 
-Received files go to `Downloads/LocalSend` on desktops, or the app's folder on phones. Change the folder, the device name, the port, encryption and the receive PIN in **Settings**. Devices with a star are favorites: they stay in the list while offline, and Quick Save accepts their transfers without asking.
+Received files go to `Downloads/Hando` on desktops, or the app's folder on phones. Change the folder, the device name, the port, encryption and the receive PIN in **Settings**. Devices with a star are favorites: they stay in the list while offline, and Quick Save accepts their transfers without asking.
 
 ## Development
 
-LocalSend on NSGo needs Go 1.26 or later. Apple targets need Xcode, and Android needs the Android SDK's platform-tools.
+Hando needs Go 1.26 or later. Apple targets need Xcode, and Android needs the Android SDK's platform-tools.
 
 ```sh
 go tool nsgo dev                    # run on this machine
@@ -66,8 +66,10 @@ go tool nsgo dev -target ios_simulator
 
 Read [ARCHITECTURE.md](ARCHITECTURE.md) before changing the protocol or the app's state, and [AGENTS.md](AGENTS.md) for the working rules. User-visible changes go in [CHANGELOG.md](CHANGELOG.md).
 
+To release, set `version` in `nsgo.yaml`, move `Unreleased` in `CHANGELOG.md` under that version and push the tag `v<version>`: CI builds every package on a Mac and publishes them as the tag's GitHub release, with that section as its notes.
+
 ## License
 
-LocalSend on NSGo is licensed under the [MIT License](LICENSE). It implements the [LocalSend protocol](https://github.com/localsend/protocol) and is not affiliated with the LocalSend project.
+Hando is licensed under the [MIT License](LICENSE). It implements the [LocalSend protocol](https://github.com/localsend/protocol) and is not affiliated with the LocalSend project.
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this project shall be licensed under the MIT license, without any additional terms or conditions.

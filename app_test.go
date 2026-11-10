@@ -96,7 +96,7 @@ func TestMacMenu(t *testing.T) {
 	if !app.Exists("id:transfers-empty") {
 		t.Fatal("the View menu did not open transfers")
 	}
-	app.ChooseMenu("LocalSend", "Settings…")
+	app.ChooseMenu("Hando", "Settings…")
 	if !app.Exists("id:settings-alias") {
 		t.Fatal("Settings… did not open settings")
 	}

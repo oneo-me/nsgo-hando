@@ -1,6 +1,6 @@
-// Command localsend is a LocalSend client on NSGo: nearby devices found
-// over multicast, files sent and received over the LocalSend protocol,
-// and one app on macOS, Windows, Linux, iOS and Android.
+// Command hando is a file sharing app on NSGo: nearby devices found over
+// multicast, files sent and received over the LocalSend protocol, and one
+// app on macOS, Windows, Linux, iOS and Android.
 package main
 
 import (

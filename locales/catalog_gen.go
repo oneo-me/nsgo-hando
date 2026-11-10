@@ -342,7 +342,7 @@ var keyOfText = [numTexts]string{
 
 // textsEn are the messages without arguments in en.
 var textsEn = i18n.NewTexts(""+
-	"LocalSend"+
+	"Hando"+
 	"Private file sharing on your local network"+
 	"Nearby"+
 	"Transfers"+
@@ -355,7 +355,7 @@ var textsEn = i18n.NewTexts(""+
 	"Online"+
 	"Offline"+
 	"No devices nearby"+
-	"Make sure the other device is on the same Wi-Fi and has LocalSend open."+
+	"Make sure the other device is on the same Wi-Fi and has Hando or LocalSend open."+
 	"Refresh"+
 	"Searching the local network…"+
 	"Send"+
@@ -402,7 +402,7 @@ var textsEn = i18n.NewTexts(""+
 	"Network"+
 	"Where other devices reach this one."+
 	"Port"+
-	"LocalSend uses 53317 by default. Both devices must use the same port."+
+	"LocalSend devices use 53317 by default. Both devices must use the same port."+
 	"Encryption"+
 	"HTTPS encrypts transfers. Turn it off to work with older setups."+
 	"On (HTTPS)"+
@@ -457,7 +457,7 @@ var textsEn = i18n.NewTexts(""+
 	"Retry"+
 	"Message"+
 	"Text message"+
-	"A native LocalSend client built with NSGo."+
+	"A native file sharing app built with NSGo, compatible with LocalSend."+
 	"Open"+
 	"Local network"+
 	"Resize sidebar"+
@@ -470,7 +470,7 @@ var textsEn = i18n.NewTexts(""+
 	"Window"+
 	"Show Sidebar",
 	[]uint16{
-		9,
+		5,
 		42,
 		6,
 		9,
@@ -483,7 +483,7 @@ var textsEn = i18n.NewTexts(""+
 		6,
 		7,
 		17,
-		71,
+		80,
 		7,
 		30,
 		4,
@@ -530,7 +530,7 @@ var textsEn = i18n.NewTexts(""+
 		7,
 		35,
 		4,
-		69,
+		76,
 		10,
 		64,
 		10,
@@ -585,7 +585,7 @@ var textsEn = i18n.NewTexts(""+
 		5,
 		7,
 		12,
-		42,
+		69,
 		4,
 		13,
 		14,
@@ -601,7 +601,7 @@ var textsEn = i18n.NewTexts(""+
 
 // textsZhHans are the messages without arguments in zh-Hans.
 var textsZhHans = i18n.NewTexts(""+
-	"LocalSend"+
+	"Hando"+
 	"在局域网内私密地传输文件"+
 	"附近"+
 	"传输"+
@@ -614,7 +614,7 @@ var textsZhHans = i18n.NewTexts(""+
 	"在线"+
 	"离线"+
 	"附近没有设备"+
-	"请确认另一台设备连接了同一个 Wi-Fi，并已打开 LocalSend。"+
+	"请确认另一台设备连接了同一个 Wi-Fi，并已打开 Hando 或 LocalSend。"+
 	"刷新"+
 	"正在搜索局域网…"+
 	"发送"+
@@ -661,7 +661,7 @@ var textsZhHans = i18n.NewTexts(""+
 	"网络"+
 	"其他设备连接本机的方式。"+
 	"端口"+
-	"LocalSend 默认使用 53317。两台设备必须使用相同端口。"+
+	"LocalSend 设备默认使用 53317。两台设备必须使用相同端口。"+
 	"加密"+
 	"HTTPS 会加密传输。关闭后可兼容较旧的设置。"+
 	"开启（HTTPS）"+
@@ -716,7 +716,7 @@ var textsZhHans = i18n.NewTexts(""+
 	"重试"+
 	"消息"+
 	"文字消息"+
-	"使用 NSGo 构建的原生 LocalSend 客户端。"+
+	"使用 NSGo 构建的原生文件互传应用，与 LocalSend 兼容。"+
 	"打开"+
 	"局域网"+
 	"调整侧边栏宽度"+
@@ -729,7 +729,7 @@ var textsZhHans = i18n.NewTexts(""+
 	"窗口"+
 	"显示侧边栏",
 	[]uint16{
-		9,
+		5,
 		36,
 		6,
 		6,
@@ -742,7 +742,7 @@ var textsZhHans = i18n.NewTexts(""+
 		6,
 		6,
 		18,
-		76,
+		86,
 		6,
 		24,
 		6,
@@ -789,7 +789,7 @@ var textsZhHans = i18n.NewTexts(""+
 		6,
 		36,
 		6,
-		70,
+		76,
 		6,
 		60,
 		17,
@@ -844,7 +844,7 @@ var textsZhHans = i18n.NewTexts(""+
 		6,
 		6,
 		12,
-		50,
+		71,
 		6,
 		9,
 		21,
@@ -964,7 +964,7 @@ func (msgs Messages) arg(s string) string {
 	return s
 }
 
-// AppName says "LocalSend"
+// AppName says "Hando"
 // in the language the app shows under cx.
 //
 // The app's name, which its packages list it under in each language.
@@ -1057,7 +1057,7 @@ func NearbyEmpty(cx *core.Scope) string { return For(cx).NearbyEmpty() }
 // NearbyEmpty is the package's NearbyEmpty in the language of msgs.
 func (msgs Messages) NearbyEmpty() string { return msgs.text(textNearbyEmpty) }
 
-// NearbyEmptyDetail says "Make sure the other device is on the same Wi-Fi and has LocalSend open."
+// NearbyEmptyDetail says "Make sure the other device is on the same Wi-Fi and has Hando or LocalSend open."
 // in the language the app shows under cx.
 func NearbyEmptyDetail(cx *core.Scope) string { return For(cx).NearbyEmptyDetail() }
 
@@ -1691,7 +1691,7 @@ func Port(cx *core.Scope) string { return For(cx).Port() }
 // Port is the package's Port in the language of msgs.
 func (msgs Messages) Port() string { return msgs.text(textPort) }
 
-// PortDetail says "LocalSend uses 53317 by default. Both devices must use the same port."
+// PortDetail says "LocalSend devices use 53317 by default. Both devices must use the same port."
 // in the language the app shows under cx.
 func PortDetail(cx *core.Scope) string { return For(cx).PortDetail() }
 
@@ -2100,7 +2100,7 @@ func TextMessage(cx *core.Scope) string { return For(cx).TextMessage() }
 // TextMessage is the package's TextMessage in the language of msgs.
 func (msgs Messages) TextMessage() string { return msgs.text(textTextMessage) }
 
-// AboutDetail says "A native LocalSend client built with NSGo."
+// AboutDetail says "A native file sharing app built with NSGo, compatible with LocalSend."
 // in the language the app shows under cx.
 func AboutDetail(cx *core.Scope) string { return For(cx).AboutDetail() }
 

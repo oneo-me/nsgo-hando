@@ -1,6 +1,6 @@
-# LocalSend architecture
+# Hando architecture
 
-LocalSend on NSGo is an NSGo app whose screens are Go components and signals, with the LocalSend protocol in a separate package below it. One app process runs one receiver, one HTTP client and one discovery loop; every screen reads the same signals.
+Hando is an NSGo app whose screens are Go components and signals, with the LocalSend protocol in a separate package below it. One app process runs one receiver, one HTTP client and one discovery loop; every screen reads the same signals.
 
 ## Code map
 
@@ -45,7 +45,7 @@ LocalSend on NSGo is an NSGo app whose screens are Go components and signals, wi
 
 - `cx.Storage()`: `settings`, `favorites` and the last 50 finished transfers. Each is rewritten when its signal changes.
 - `cx.DataDir()/identity`: the certificate, its key and the HTTP-mode fingerprint. Tests and hosts without a data folder use a temporary folder.
-- Received files: the chosen folder, else `Downloads/LocalSend` on desktops and `DataDir/Received` elsewhere.
+- Received files: the chosen folder, else `Downloads/Hando` on desktops and `DataDir/Received` elsewhere.
 - In memory: the discovered devices, the current transfers, the incoming request and the send jobs waiting for a PIN. None is shared with the protocol package.
 
 ## Verification

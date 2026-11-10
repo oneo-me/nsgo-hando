@@ -261,7 +261,7 @@ func (c *Client) request(ctx context.Context, at Device, method, route string, q
 	if contentType != "" {
 		req.Header.Set("Content-Type", contentType)
 	}
-	req.Header.Set("User-Agent", "NSGo-LocalSend/"+Version)
+	req.Header.Set("User-Agent", "Hando/"+Version)
 	return c.HTTP(at).Do(req)
 }
 

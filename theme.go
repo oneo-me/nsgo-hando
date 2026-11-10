@@ -2,7 +2,7 @@ package main
 
 import "github.com/oneo-me/nsgo/core"
 
-// appTheme is LocalSend's look: a calm green page, white cards and a
+// appTheme is Hando's look: a calm green page, white cards and a
 // teal accent, in light and dark.
 func appTheme() *core.Theme {
 	t := core.DefaultTheme()

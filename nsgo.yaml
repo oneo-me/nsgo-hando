@@ -1,19 +1,28 @@
-name: LocalSend
-id: dev.oneo.localsend
-version: 0.1.0
+name: Hando
+id: me.oneo.hando
+version: 0.2026.1
 
 dev:
   target: native
 
+# The packages the README offers, which a Mac with Xcode builds.
 build:
   output: dist
-  targets: [all]
+  targets:
+    - macos_arm64
+    - macos_x64
+    - windows_arm64
+    - windows_x64
+    - linux_arm64
+    - linux_x64
+    - ios
+    - android_arm64
 
 # iOS and macOS ask before an app may reach other devices on the local
 # network.
 apple:
   info:
-    NSLocalNetworkUsageDescription: LocalSend finds nearby devices and transfers files over your local network.
+    NSLocalNetworkUsageDescription: Hando finds nearby devices and transfers files over your local network.
 
 # Multicast discovery needs these beyond the runtime's internet
 # permission.

@@ -1,0 +1,56 @@
+name: Release
+
+# Pushing a tag v<version>, the version nsgo.yaml names, builds every
+# package on a Mac and publishes the releases directory as its release,
+# with the version's section of CHANGELOG.md as its notes.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Check the version
+        run: |
+          version=$(sed -n 's/^version: *//p' nsgo.yaml)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match nsgo.yaml's version $version"
+            exit 1
+          fi
+      - name: Extract the release notes
+        run: |
+          version=${GITHUB_REF_NAME#v}
+          awk -v heading="## [$version]" '
+            index($0, heading) == 1 { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md | sed -e '/./,$!d' > "$RUNNER_TEMP/notes.md"
+          if [ ! -s "$RUNNER_TEMP/notes.md" ]; then
+            echo "::error::CHANGELOG.md has no section for $version"
+            exit 1
+          fi
+      - name: Install NSIS
+        run: brew install makensis
+      - name: Test
+        run: go tool nsgo test
+      - name: Build
+        run: go tool nsgo build
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd dist/releases
+          gh release create "$GITHUB_REF_NAME" --title "Hando $GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/notes.md" --verify-tag \
+            $(find . -maxdepth 1 -type f ! -name .version)

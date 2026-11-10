@@ -2,13 +2,15 @@
 
 ## [Unreleased]
 
-- Add LocalSend v2.2 transfers over mutual TLS and plain HTTP.
-- Add multicast discovery with a local network scan as a fallback.
-- Add sending files, folders and text messages with progress and cancellation.
-- Add receiving with review, Quick Save for favorites and safe file saves.
-- Add favorites, transfer history, a receive PIN, checksum verification and a chosen receive folder.
-- Add native desktop and phone layouts, English and Simplified Chinese, and builds for macOS, Windows, Linux, iOS and Android.
+## [0.2026.1] - 2026-11-11
+
+The first release of Hando, a file sharing app for macOS, Windows, Linux, iOS and Android that works with LocalSend devices.
+
+- Add LocalSend v2.2 transfers over mutual TLS, with plain HTTP for older setups.
+- Add finding nearby devices by multicast, with a local network scan as a fallback.
+- Add sending files, folders and text messages, with per-file progress and cancellation.
+- Add receiving after a review, with Quick Save for favorites and checksum-verified saves.
+- Add favorites, transfer history, a receive PIN and a chosen receive folder.
+- Add a sidebar layout on desktops and a tab bar on phones, in light and dark, in English and Simplified Chinese.
 - Add a macOS menu bar with settings, page, sidebar and refresh shortcuts.
-- Add a Liquid Glass app icon of one file card handed off another, flattened for the other platforms.
-- Fix dropped frames on the nearby page while resizing the window and while peers answer discovery.
-- Fix the crowded sidebar footer, whose settings button a long address pushed out.
+- Add installers for macOS, Windows and Linux, an Android APK and an iOS IPA.

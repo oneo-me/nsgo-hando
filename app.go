@@ -231,7 +231,7 @@ func newApp(cx *core.Scope) *app {
 	a.identityDir = filepath.Join(cx.DataDir(), "identity")
 	if cx.DataDir() == "" {
 		// Tests and hosts without a data folder get a temporary identity.
-		dir, err := os.MkdirTemp("", "nsgo-localsend-identity-*")
+		dir, err := os.MkdirTemp("", "hando-identity-*")
 		if err == nil {
 			a.identityDir, a.tempDir = dir, dir
 		}
@@ -365,14 +365,14 @@ func deviceProfile(cx *core.Scope) (string, localsend.DeviceType) {
 }
 
 // defaultReceiveDir is where received files go before the user picks a
-// folder: Downloads/LocalSend on desktops, the app's folder elsewhere.
+// folder: Downloads/Hando on desktops, the app's folder elsewhere.
 func defaultReceiveDir(cx *core.Scope) string {
 	switch cx.Env().OS() {
 	case core.OSMacOS, core.OSWindows, core.OSLinux:
 		if home, err := os.UserHomeDir(); err == nil {
 			downloads := filepath.Join(home, "Downloads")
 			if info, err := os.Stat(downloads); err == nil && info.IsDir() {
-				return filepath.Join(downloads, "LocalSend")
+				return filepath.Join(downloads, "Hando")
 			}
 		}
 	}
