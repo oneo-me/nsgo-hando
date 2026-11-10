@@ -9,7 +9,7 @@ Hando is an NSGo app whose screens are Go components and signals, with the Local
 | `main.go` | Entry point and the main window's size and limits. |
 | `app.go` | The app's signals and lifetime: settings, favorites, devices, transfers, the receiver node, settings storage, device merging and shared helpers. |
 | `nearby.go` | The nearby page: this device, discovery banners, device cards and the empty state. |
-| `send.go` | The send dialog, file and folder picks, the prepare/upload client flow and the PIN retry. |
+| `send.go` | The send dialog, file and folder picks and drops, the prepare/upload client flow and the PIN retry. |
 | `receive.go` | The incoming request dialog, quick save, progress and the receive result. |
 | `transfers.go` | Active and finished transfer cards, history, cancel and open. |
 | `settings.go` | The settings page and the receiver's restart when its network settings change. |

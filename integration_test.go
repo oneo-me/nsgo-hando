@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -265,5 +266,72 @@ func TestReceiveFileFromPeer(t *testing.T) {
 	if app.Exists("id:nav-transfers") {
 		app.Press("id:nav-transfers")
 		app.WaitFor("text:Completed", 5*time.Second)
+	}
+}
+
+func TestDropFilesOnPeer(t *testing.T) {
+	port := freePort(t)
+	p := newPeer(t)
+	src := t.TempDir()
+	if err := os.WriteFile(filepath.Join(src, "dropped a.txt"), []byte("dropped file"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.MkdirAll(filepath.Join(src, "album"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(src, "album", "b.txt"), []byte("inside a folder"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	fileURI := func(p string) string { return (&url.URL{Scheme: "file", Path: filepath.ToSlash(p)}).String() }
+	app := nsgotest.Start(t, Root, nsgotest.Size(1000, 720), nsgotest.Storage(seededStorage(port, t.TempDir())))
+	p.registerWith(t, port)
+	app.WaitFor("text:Phone", 5*time.Second)
+
+	app.DropFiles("id:device-"+shortFingerprint(p.fingerprint), fileURI(filepath.Join(src, "dropped a.txt")),
+		fileURI(filepath.Join(src, "album")), "blob:http://localhost/1#ignored.txt")
+	app.WaitFor("id:send-dialog", 2*time.Second)
+	app.WaitFor("text:dropped a.txt", 2*time.Second)
+	app.WaitFor("text:album/b.txt", 2*time.Second)
+	app.DropFiles("id:send-form", fileURI(filepath.Join(src, "album")))
+	app.WaitFor("text:album/b.txt >> nth=1", 2*time.Second)
+	app.Press("id:send-submit")
+
+	deadline := time.Now().Add(5 * time.Second)
+	for {
+		p.mu.Lock()
+		got := map[string]string{}
+		for id, data := range p.files {
+			got[p.offered[id].FileName] = string(data)
+		}
+		n := len(p.files)
+		p.mu.Unlock()
+		if got["dropped a.txt"] == "dropped file" && got["album/b.txt"] == "inside a folder" && n == 3 {
+			break
+		}
+		if time.Now().After(deadline) {
+			t.Fatalf("peer received %v", got)
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+}
+
+func TestDroppedPath(t *testing.T) {
+	for uri, want := range map[string]string{
+		"file:///tmp/a%20b.txt":        "/tmp/a b.txt",
+		"file://localhost/tmp/x":       "/tmp/x",
+		"file:///C:/nsgo%20dir/a.txt":  "C:/nsgo dir/a.txt",
+		"file://server/share/y%20z":    "//server/share/y z",
+		"blob:http://localhost/1#a.md": "",
+	} {
+		got, ok := droppedPath(uri)
+		if want == "" {
+			if ok {
+				t.Errorf("droppedPath(%q) = %q, want none", uri, got)
+			}
+			continue
+		}
+		if filepath.ToSlash(got) != want {
+			t.Errorf("droppedPath(%q) = %q, want %q", uri, got, want)
+		}
 	}
 }

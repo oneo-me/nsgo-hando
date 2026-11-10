@@ -52,7 +52,7 @@ Download the package for your platform from [Releases](https://github.com/oneo-m
 
 1. Open Hando, or LocalSend, on two devices connected to the same Wi-Fi.
 2. Choose a device under **Nearby devices**.
-3. Pick files or a folder, or write a message, then press **Send**.
+3. Pick files or a folder, or write a message, then press **Send**. On desktops, you can also drop files on a device.
 4. Accept the transfer on the other device.
 
 Received files go to `Downloads/Hando` on desktops, or the app's folder on phones. Change the folder, the device name, the port, encryption and the receive PIN in **Settings**. Devices with a star are favorites: they stay in the list while offline, and Quick Save accepts their transfers without asking.

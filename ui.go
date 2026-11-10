@@ -26,7 +26,17 @@ func (a *app) view(cx *core.Scope, wide bool) core.Node {
 	colors := ui.ColorsOf(cx)
 	return core.View{Style: ui.FillRest, StyleFunc: func() core.Style {
 		return core.Style{Background: colors.Background(), Color: colors.Text()}
-	}, Children: []core.Node{shell, a.overlays(cx)}}
+	}, Children: []core.Node{shell, a.overlays(cx)}, OnFileDrop: a.dropAnywhere}
+}
+
+// dropAnywhere keeps files dropped outside a device card for the next
+// send, then asks for a device.
+func (a *app) dropAnywhere(uris []string) {
+	if !a.dropFiles(uris) {
+		return
+	}
+	a.page.Set("nearby")
+	a.toast(locales.DropChooseDevice(a.cx))
 }
 
 // desktopShell is the sidebar and page layout of a wide window.

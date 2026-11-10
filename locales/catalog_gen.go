@@ -101,6 +101,8 @@ const (
 	textMessagePlaceholder
 	textNoFilesYet
 	textNoFilesYetDetail
+	textDropToAdd
+	textDropChooseDevice
 	textRemove
 	textClear
 	textCancel
@@ -237,6 +239,8 @@ var keyOfText = [numTexts]string{
 	"messagePlaceholder",
 	"noFilesYet",
 	"noFilesYetDetail",
+	"dropToAdd",
+	"dropChooseDevice",
 	"remove",
 	"clear",
 	"cancel",
@@ -371,6 +375,8 @@ var textsEn = i18n.NewTexts(""+
 	"Write a message…"+
 	"No files chosen yet"+
 	"Choose files or a folder, or write a message."+
+	"Release to add the files"+
+	"Choose a device to send the dropped files to."+
 	"Remove"+
 	"Clear"+
 	"Cancel"+
@@ -501,6 +507,8 @@ var textsEn = i18n.NewTexts(""+
 		7,
 		18,
 		19,
+		45,
+		24,
 		45,
 		6,
 		5,
@@ -636,6 +644,8 @@ var textsZhHans = i18n.NewTexts(""+
 	"写一条消息…"+
 	"还没有选择文件"+
 	"选择文件或文件夹，也可以写一条消息。"+
+	"松开以添加这些文件"+
+	"选择一台设备来发送拖入的文件。"+
 	"移除"+
 	"清空"+
 	"取消"+
@@ -767,6 +777,8 @@ var textsZhHans = i18n.NewTexts(""+
 		18,
 		21,
 		54,
+		27,
+		45,
 		6,
 		6,
 		6,
@@ -1214,6 +1226,20 @@ func NoFilesYetDetail(cx *core.Scope) string { return For(cx).NoFilesYetDetail()
 
 // NoFilesYetDetail is the package's NoFilesYetDetail in the language of msgs.
 func (msgs Messages) NoFilesYetDetail() string { return msgs.text(textNoFilesYetDetail) }
+
+// DropToAdd says "Release to add the files"
+// in the language the app shows under cx.
+func DropToAdd(cx *core.Scope) string { return For(cx).DropToAdd() }
+
+// DropToAdd is the package's DropToAdd in the language of msgs.
+func (msgs Messages) DropToAdd() string { return msgs.text(textDropToAdd) }
+
+// DropChooseDevice says "Choose a device to send the dropped files to."
+// in the language the app shows under cx.
+func DropChooseDevice(cx *core.Scope) string { return For(cx).DropChooseDevice() }
+
+// DropChooseDevice is the package's DropChooseDevice in the language of msgs.
+func (msgs Messages) DropChooseDevice() string { return msgs.text(textDropChooseDevice) }
 
 // FilesSelected says "{count, plural, one {1 file} other {# files}}"
 // in the language the app shows under cx.

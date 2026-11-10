@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io"
 	"io/fs"
+	"net/url"
 	"os"
 	"path"
 	"path/filepath"
@@ -111,7 +112,24 @@ func (a *app) sendForm(cx *core.Scope) core.Node {
 		ui.Input{Value: a.sendMsg.Get, OnChange: a.sendMsg.Set, Multiline: true, Placeholder: l.MessagePlaceholder(),
 			MaxLength: 4000, Label: l.Message(), TestID: "send-message"},
 	}})
-	return core.View{Style: core.Style{Gap: 12, MinWidth: core.Pt(340), MaxWidth: core.Pt(560)}, Children: body}
+	over := core.NewSignal(cx, false)
+	body = append(body, core.Show{When: over.Get, Then: func(cx *core.Scope) core.Node { return dropHint(cx) }})
+	return core.View{Style: core.Style{Gap: 12, MinWidth: core.Pt(340), MaxWidth: core.Pt(560)}, Children: body,
+		OnFileDragEnter: func() { over.Set(true) }, OnFileDragLeave: func() { over.Set(false) },
+		OnFileDrop: func(uris []string) { over.Set(false); a.dropFiles(uris) }, TestID: "send-form"}
+}
+
+// dropHint covers the send form while files are dragged over it.
+func dropHint(cx *core.Scope) core.Node {
+	colors := ui.ColorsOf(cx)
+	return core.View{PointerEvents: core.PointerEventsNone, Style: core.Style{Position: core.Absolute, Top: core.Pt(0), Right: core.Pt(0),
+		Bottom: core.Pt(0), Left: core.Pt(0), AlignItems: core.AlignCenter, JustifyContent: core.JustifyCenter, Gap: 6,
+		CornerRadius: 10, BorderWidth: 2, BorderStyle: core.BorderDashed}, StyleFunc: func() core.Style {
+		return core.Style{Background: ui.TintsOf(cx).Accent().Over(colors.Surface()), BorderColor: colors.Accent()}
+	}, Children: []core.Node{
+		ui.IconOf(lucide.FilePlus, 22, colors.Accent),
+		core.Text{Content: locales.DropToAdd(cx), Style: ui.TypeLabel, StyleFunc: ui.Colored(colors.Accent)},
+	}}
 }
 
 // sendFileRow is one chosen file.
@@ -181,11 +199,29 @@ func (a *app) pickFolder() {
 
 // walkFolders lists a folder's files off the engine and adds them.
 func (a *app) walkFolders(dirs []core.Directory) {
-	const limit = 5000
-	var out []sendFile
+	out, truncated := listFolders(dirs, nil)
+	a.addScanned(out, truncated)
+}
+
+// addScanned adds files a scan off the engine found.
+func (a *app) addScanned(out []sendFile, truncated bool) {
+	a.cx.Post(func() {
+		a.scanning.Set(false)
+		a.sendFiles.Update(func(list []sendFile) []sendFile { return append(list, out...) })
+		if truncated {
+			a.toast(locales.FilesSelected(a.cx, scanLimit))
+		}
+	})
+}
+
+// scanLimit is the most files one pick or drop adds.
+const scanLimit = 5000
+
+// listFolders appends the files inside dirs to out, up to scanLimit.
+func listFolders(dirs []core.Directory, out []sendFile) ([]sendFile, bool) {
 	truncated := false
 	for _, dir := range dirs {
-		if len(out) >= limit {
+		if len(out) >= scanLimit {
 			truncated = true
 			break
 		}
@@ -207,7 +243,7 @@ func (a *app) walkFolders(dirs []core.Directory) {
 			if entry.Type()&fs.ModeSymlink != 0 || skipName(entry.Name()) {
 				return nil
 			}
-			if len(out) >= limit {
+			if len(out) >= scanLimit {
 				truncated = true
 				return fs.SkipAll
 			}
@@ -228,13 +264,63 @@ func (a *app) walkFolders(dirs []core.Directory) {
 			return nil
 		})
 	}
-	a.cx.Post(func() {
-		a.scanning.Set(false)
-		a.sendFiles.Update(func(list []sendFile) []sendFile { return append(list, out...) })
-		if truncated {
-			a.toast(locales.FilesSelected(a.cx, limit))
+	return out, truncated
+}
+
+// dropFiles adds files and folders dropped from another app, reporting
+// whether any was local: only file: URLs name something the app can read.
+func (a *app) dropFiles(uris []string) bool {
+	var paths []string
+	for _, uri := range uris {
+		if p, ok := droppedPath(uri); ok {
+			paths = append(paths, p)
 		}
-	})
+	}
+	if len(paths) == 0 {
+		return false
+	}
+	a.scanning.Set(true)
+	go func() {
+		var out []sendFile
+		var dirs []core.Directory
+		truncated := false
+		for _, p := range paths {
+			info, err := os.Stat(p)
+			switch {
+			case err != nil:
+			case info.IsDir():
+				dirs = append(dirs, core.Directory{Name: filepath.Base(p), Path: p})
+			case !info.Mode().IsRegular():
+			case len(out) >= scanLimit:
+				truncated = true
+			default:
+				file := p
+				name := filepath.Base(p)
+				out = append(out, sendFile{ID: localsend.NewID(8), Name: name, Size: info.Size(), MIME: localsend.MIMEForName(name),
+					Modified: info.ModTime(), open: func() (io.ReadCloser, error) { return os.Open(file) }})
+			}
+		}
+		out, more := listFolders(dirs, out)
+		a.addScanned(out, truncated || more)
+	}()
+	return true
+}
+
+// droppedPath is the local path a dropped file: URL names, such as
+// file:///Users/a/x.txt, file:///C:/a/x.txt or file://server/share/x.
+func droppedPath(uri string) (string, bool) {
+	u, err := url.Parse(uri)
+	if err != nil || !strings.EqualFold(u.Scheme, "file") || u.Path == "" {
+		return "", false
+	}
+	p := u.Path
+	switch {
+	case u.Host != "" && u.Host != "localhost":
+		p = "//" + u.Host + p
+	case len(p) >= 3 && p[0] == '/' && p[2] == ':':
+		p = p[1:]
+	}
+	return filepath.FromSlash(p), true
 }
 
 // skipName reports a file the user did not mean to send.

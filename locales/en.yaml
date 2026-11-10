@@ -28,6 +28,8 @@ addMessage: Message
 messagePlaceholder: Write a message…
 noFilesYet: No files chosen yet
 noFilesYetDetail: Choose files or a folder, or write a message.
+dropToAdd: Release to add the files
+dropChooseDevice: Choose a device to send the dropped files to.
 filesSelected:
   message: "{count, plural, one {1 file} other {# files}}"
   description: How many files the send dialog holds.

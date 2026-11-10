@@ -224,10 +224,21 @@ func (a *app) deviceCard(cx *core.Scope, d localsend.Device) core.Node {
 		model = deviceTypeLabel(cx, d.DeviceType)
 	}
 	up := online(d)
-	return core.View{OnPress: func(core.PressEvent) { a.openSend(device) }, Role: core.RoleButton, Label: device.Alias, TestID: "device-" + shortFingerprint(d.Fingerprint),
+	over := core.NewSignal(cx, false)
+	return core.View{OnPress: func(core.PressEvent) { a.openSend(device) }, Role: core.RoleButton,
+		OnFileDragEnter: func() { over.Set(true) }, OnFileDragLeave: func() { over.Set(false) },
+		OnFileDrop: func(uris []string) {
+			over.Set(false)
+			if a.dropFiles(uris) {
+				a.openSend(device)
+			}
+		}, Label: device.Alias, TestID: "device-" + shortFingerprint(d.Fingerprint),
 		Style: core.Style{Padding: core.All(14), Gap: 12, BorderWidth: 1, CornerRadius: 12, BorderCurve: core.BorderCurveContinuous, Transition: cardMotion},
 		StyleFunc: func() core.Style {
 			lift := ui.FinOf(cx).Raised().Shadows
+			if over.Get() {
+				return core.Style{Background: ui.TintsOf(cx).Accent().Over(colors.Surface()), BorderColor: colors.Accent(), Shadows: lift}
+			}
 			return core.Style{Background: colors.Surface(), BorderColor: colors.Border(), Shadows: lift,
 				Hover: &core.Style{BorderColor: ui.Mix(colors.Border(), colors.Accent(), 0.5),
 					Shadows: []core.BoxShadow{ui.Shadow(0, 6, 18, -4, ui.Black(0.14))}},

@@ -28,6 +28,8 @@ addMessage: 文字消息
 messagePlaceholder: 写一条消息…
 noFilesYet: 还没有选择文件
 noFilesYetDetail: 选择文件或文件夹，也可以写一条消息。
+dropToAdd: 松开以添加这些文件
+dropChooseDevice: 选择一台设备来发送拖入的文件。
 filesSelected:
   message: "{count, plural, other {# 个文件}}"
   description: 发送面板中有多少个文件。
