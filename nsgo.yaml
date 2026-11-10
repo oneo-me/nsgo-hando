@@ -1,0 +1,27 @@
+name: LocalSend
+id: dev.oneo.localsend
+version: 0.1.0
+
+dev:
+  target: native
+
+build:
+  output: dist
+  targets: [all]
+
+# iOS and macOS ask before an app may reach other devices on the local
+# network.
+apple:
+  info:
+    NSLocalNetworkUsageDescription: LocalSend finds nearby devices and transfers files over your local network.
+
+# Multicast discovery needs these beyond the runtime's internet
+# permission.
+android:
+  permissions:
+    - ACCESS_NETWORK_STATE
+    - ACCESS_WIFI_STATE
+    - CHANGE_WIFI_MULTICAST_STATE
+
+release:
+  github: oneo-me/nsgo-localsend

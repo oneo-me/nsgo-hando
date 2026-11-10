@@ -1,0 +1,143 @@
+appName:
+  message: LocalSend
+  description: The app's name, which its packages list it under in each language.
+tagline: Private file sharing on your local network
+tabNearby: Nearby
+tabTransfers: Transfers
+tabSettings: Settings
+nearby: Nearby devices
+transfers: Transfers
+settings: Settings
+thisDevice: This device
+you: You
+online: Online
+offline: Offline
+nearbyEmpty: No devices nearby
+nearbyEmptyDetail: Make sure the other device is on the same Wi-Fi and has LocalSend open.
+
+onlineCount:
+  message: "{count, plural, =0 {No devices online} one {1 device online} other {# devices online}}"
+  description: How many nearby devices answered.
+refresh: Refresh
+refreshing: Searching the local network…
+send: Send
+sendTo: Send to {name}
+chooseFiles: Choose files
+chooseFolder: Choose folder
+addMessage: Message
+messagePlaceholder: Write a message…
+noFilesYet: No files chosen yet
+noFilesYetDetail: Choose files or a folder, or write a message.
+filesSelected:
+  message: "{count, plural, one {1 file} other {# files}}"
+  description: How many files the send dialog holds.
+remove: Remove
+removeFile: Remove {name}
+clear: Clear
+cancel: Cancel
+accept: Accept
+decline: Decline
+incomingTitle: Incoming files
+incomingFrom: from {name}
+incomingDetail: "{count, plural, one {1 file · {size}} other {# files · {size}}}"
+incomingQuestion: Accept the transfer?
+incomingEmpty: No files selected.
+acceptSelected: Accept selected
+pinTitle: Enter PIN
+pinDescription: "{name} requires a PIN to receive files."
+pinPlaceholder: PIN
+pinWrong: That PIN was not accepted.
+waiting: Waiting for {name}…
+waitingShort: Waiting
+active: Transferring
+receiving: Receiving
+sending: Sending
+completed: Completed
+failed: Failed
+cancelled: Cancelled
+declined: Declined
+transferSent: Sent to {name}
+transferReceived: Received from {name}
+transferError: "{name} failed: {error}"
+noTransfers: No transfers yet
+noTransfersDetail: Files you send or receive show here with their progress.
+activeTransfers: In progress
+history: History
+clearHistory: Clear history
+settingsIdentity: Identity
+settingsIdentityDetail: The name nearby devices see.
+alias: Device name
+aliasPlaceholder: My device
+deviceType: Device type
+deviceTypeDesktop: Desktop
+deviceTypeMobile: Mobile
+deviceTypeWeb: Web
+deviceTypeServer: Server
+settingsNetwork: Network
+settingsNetworkDetail: Where other devices reach this one.
+port: Port
+portDetail: LocalSend uses 53317 by default. Both devices must use the same port.
+encryption: Encryption
+encryptionDetail: HTTPS encrypts transfers. Turn it off to work with older setups.
+encryptionOn: On (HTTPS)
+encryptionOff: Off (HTTP)
+pin: Receive PIN
+pinDetail: Ask senders for this PIN before they can send files. Leave empty for none.
+receivePinPlaceholder: None
+settingsReceiving: Receiving
+settingsReceivingDetail: Where and how received files are saved.
+quickSave: Quick save
+quickSaveDetail: Accept files from favorite devices without asking.
+receiveFolder: Save received files to
+receiveFolderDefault: App folder
+chooseFolderShort: Choose…
+useDefaultFolder: Use default
+verifyChecksums: Verify checksums
+verifyChecksumsDetail: Reject a file whose SHA-256 does not match what the sender offered.
+settingsAppearance: Appearance
+settingsAppearanceDetail: How the app looks and speaks.
+theme: Appearance
+themeSystem: Follow system
+themeLight: Light
+themeDark: Dark
+language: Language
+languageSystem: Follow system
+languageEnglish: English
+languageChinese: 简体中文
+settingsAbout: About
+protocol: LocalSend protocol
+version: Version
+fingerprint: Fingerprint
+serverErrorTitle: The receiver could not start
+serverRunning: Receiving on {address}
+serverStopped: Receiver is off
+apply: Apply
+
+settingsSaved: Saved
+favorite: Favorite
+unfavorite: Remove favorite
+favorites: Favorites
+nearbySection: Devices
+transfersSection: Activity
+appSection: App
+historyCleared: History cleared
+searching: Searching the local network…
+pinRequiredDetail: The receiver asked for a PIN.
+busyDetail: The receiver is busy with another transfer.
+rejectedDetail: The receiver declined the transfer.
+noFilesNeededDetail: The receiver needs none of the files.
+cancelledDetail: The transfer was cancelled.
+openSettings: Settings
+toggleSidebar: Toggle sidebar
+close: Close
+retry: Retry
+message: Message
+textMessage: Text message
+aboutDetail: A native LocalSend client built with NSGo.
+savedTo: "Saved to {path}"
+open: Open
+linkLocal: Local network
+resizeSidebar: Resize sidebar
+chooseFolderUnavailable: That folder cannot be used on this platform.
+webTitle: Browser build
+webDetail: Receiving and device discovery need native sockets. Use the desktop, iOS or Android app to move files.

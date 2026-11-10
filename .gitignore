@@ -1,0 +1,4 @@
+# The nsgo tool's caches and build output
+.nsgo/
+dist/
+.DS_Store

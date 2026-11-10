@@ -1,0 +1,143 @@
+appName:
+  message: LocalSend
+  description: 应用名称，各语言都这么叫。
+tagline: 在局域网内私密地传输文件
+tabNearby: 附近
+tabTransfers: 传输
+tabSettings: 设置
+nearby: 附近设备
+transfers: 传输
+settings: 设置
+thisDevice: 本机
+you: 你
+online: 在线
+offline: 离线
+nearbyEmpty: 附近没有设备
+nearbyEmptyDetail: 请确认另一台设备连接了同一个 Wi-Fi，并已打开 LocalSend。
+
+onlineCount:
+  message: "{count, plural, =0 {没有设备在线} other {# 台设备在线}}"
+  description: 回应了的附近设备数量。
+refresh: 刷新
+refreshing: 正在搜索局域网…
+send: 发送
+sendTo: 发送到 {name}
+chooseFiles: 选择文件
+chooseFolder: 选择文件夹
+addMessage: 文字消息
+messagePlaceholder: 写一条消息…
+noFilesYet: 还没有选择文件
+noFilesYetDetail: 选择文件或文件夹，也可以写一条消息。
+filesSelected:
+  message: "{count, plural, other {# 个文件}}"
+  description: 发送面板中有多少个文件。
+remove: 移除
+removeFile: 移除 {name}
+clear: 清空
+cancel: 取消
+accept: 接收
+decline: 拒绝
+incomingTitle: 收到文件
+incomingFrom: 来自 {name}
+incomingDetail: "{count, plural, other {# 个文件 · {size}}}"
+incomingQuestion: 接收这次传输吗？
+incomingEmpty: 没有选择文件。
+acceptSelected: 接收所选文件
+pinTitle: 输入 PIN
+pinDescription: "{name} 要求输入 PIN 才能接收文件。"
+pinPlaceholder: PIN
+pinWrong: PIN 不正确。
+waiting: 正在等待 {name}…
+waitingShort: 等待中
+active: 传输中
+receiving: 接收中
+sending: 发送中
+completed: 已完成
+failed: 失败
+cancelled: 已取消
+declined: 已拒绝
+transferSent: 已发送到 {name}
+transferReceived: 已接收自 {name}
+transferError: "{name} 失败：{error}"
+noTransfers: 还没有传输
+noTransfersDetail: 你发送或接收的文件会在这里显示进度。
+activeTransfers: 进行中
+history: 历史记录
+clearHistory: 清空历史记录
+settingsIdentity: 设备身份
+settingsIdentityDetail: 附近设备看到的名称。
+alias: 设备名称
+aliasPlaceholder: 我的设备
+deviceType: 设备类型
+deviceTypeDesktop: 桌面设备
+deviceTypeMobile: 移动设备
+deviceTypeWeb: 网页
+deviceTypeServer: 服务器
+settingsNetwork: 网络
+settingsNetworkDetail: 其他设备连接本机的方式。
+port: 端口
+portDetail: LocalSend 默认使用 53317。两台设备必须使用相同端口。
+encryption: 加密
+encryptionDetail: HTTPS 会加密传输。关闭后可兼容较旧的设置。
+encryptionOn: 开启（HTTPS）
+encryptionOff: 关闭（HTTP）
+pin: 接收 PIN
+pinDetail: 发送方需要输入此 PIN 才能发送文件。留空表示不要求。
+receivePinPlaceholder: 无
+settingsReceiving: 接收
+settingsReceivingDetail: 接收的文件保存在哪里，以及如何处理。
+quickSave: 快速保存
+quickSaveDetail: 自动接收收藏设备发来的文件，不再询问。
+receiveFolder: 接收文件保存到
+receiveFolderDefault: 应用文件夹
+chooseFolderShort: 选择…
+useDefaultFolder: 使用默认文件夹
+verifyChecksums: 校验文件
+verifyChecksumsDetail: 收到文件的 SHA-256 与发送方不一致时拒绝该文件。
+settingsAppearance: 外观
+settingsAppearanceDetail: 应用的显示方式和语言。
+theme: 外观
+themeSystem: 跟随系统
+themeLight: 浅色
+themeDark: 深色
+language: 语言
+languageSystem: 跟随系统
+languageEnglish: English
+languageChinese: 简体中文
+settingsAbout: 关于
+protocol: LocalSend 协议
+version: 版本
+fingerprint: 指纹
+serverErrorTitle: 接收服务无法启动
+serverRunning: 正在 {address} 接收
+serverStopped: 接收服务未启动
+apply: 应用
+
+settingsSaved: 已保存
+favorite: 收藏
+unfavorite: 取消收藏
+favorites: 收藏
+nearbySection: 设备
+transfersSection: 活动
+appSection: 应用
+historyCleared: 历史记录已清空
+searching: 正在搜索局域网…
+pinRequiredDetail: 接收方要求输入 PIN。
+busyDetail: 接收方正在处理另一次传输。
+rejectedDetail: 接收方拒绝了这次传输。
+noFilesNeededDetail: 接收方不需要这些文件。
+cancelledDetail: 传输已取消。
+openSettings: 设置
+toggleSidebar: 显示或隐藏侧边栏
+close: 关闭
+retry: 重试
+message: 消息
+textMessage: 文字消息
+aboutDetail: 使用 NSGo 构建的原生 LocalSend 客户端。
+savedTo: "已保存到 {path}"
+open: 打开
+linkLocal: 局域网
+resizeSidebar: 调整侧边栏宽度
+chooseFolderUnavailable: 此平台无法使用该文件夹。
+webTitle: 网页版本
+webDetail: 接收文件与发现设备需要原生网络套接字。请使用桌面、iOS 或 Android 应用传输文件。
