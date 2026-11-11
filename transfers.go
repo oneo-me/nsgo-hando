@@ -300,6 +300,16 @@ func (a *app) openReceived(t *transfer) {
 		}
 		file = received[0]
 	}
+	// iOS shows its open-in menu as a small popover from the screen's
+	// center; the share sheet lists the same apps across the full width.
+	if a.cx.Env().OS() == core.OSIOS {
+		a.cx.Share(core.ShareOptions{Files: []core.SharedFile{file}}, func(shown bool, err error) {
+			if err != nil {
+				a.toastError(locales.Open(a.cx), err.Error())
+			}
+		})
+		return
+	}
 	a.cx.OpenFile(file, func(opened bool, err error) {
 		if err != nil {
 			a.toastError(locales.Open(a.cx), err.Error())
