@@ -11,7 +11,7 @@ Hando is an NSGo app whose screens are Go components and signals, with the Local
 | `nearby.go` | The nearby page: this device, discovery banners, device cards and the empty state. |
 | `send.go` | The send dialog, file and folder picks and drops, the prepare/upload client flow and the PIN retry. |
 | `receive.go` | The incoming request dialog, quick save, progress and the receive result. |
-| `transfers.go` | Active and finished transfer cards, history, cancel and open. |
+| `transfers.go` | Active and finished transfer cards, history, cancel, opening and sharing what arrived. |
 | `settings.go` | The settings page and the receiver's restart when its network settings change. |
 | `ui.go` | The desktop sidebar shell, the phone shell, the header actions, overlays and shared visuals. |
 | `menu.go` | The macOS menu bar. |

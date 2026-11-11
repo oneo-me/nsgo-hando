@@ -200,6 +200,8 @@ const (
 	textTextMessage
 	textAboutDetail
 	textOpen
+	textShare
+	textOpenFolder
 	textLinkLocal
 	textResizeSidebar
 	textChooseFolderUnavailable
@@ -338,6 +340,8 @@ var keyOfText = [numTexts]string{
 	"textMessage",
 	"aboutDetail",
 	"open",
+	"share",
+	"openFolder",
 	"linkLocal",
 	"resizeSidebar",
 	"chooseFolderUnavailable",
@@ -474,6 +478,8 @@ var textsEn = i18n.NewTexts(""+
 	"Text message"+
 	"A native file sharing app built with NSGo, compatible with LocalSend."+
 	"Open"+
+	"Share"+
+	"Open folder"+
 	"Local network"+
 	"Resize sidebar"+
 	"That folder cannot be used on this platform."+
@@ -607,6 +613,8 @@ var textsEn = i18n.NewTexts(""+
 		12,
 		69,
 		4,
+		5,
+		11,
 		13,
 		14,
 		44,
@@ -743,6 +751,8 @@ var textsZhHans = i18n.NewTexts(""+
 	"文字消息"+
 	"使用 NSGo 构建的原生文件互传应用，与 LocalSend 兼容。"+
 	"打开"+
+	"分享"+
+	"打开文件夹"+
 	"局域网"+
 	"调整侧边栏宽度"+
 	"此平台无法使用该文件夹。"+
@@ -876,6 +886,8 @@ var textsZhHans = i18n.NewTexts(""+
 		12,
 		71,
 		6,
+		6,
+		15,
 		9,
 		21,
 		36,
@@ -2200,6 +2212,20 @@ func Open(cx *core.Scope) string { return For(cx).Open() }
 
 // Open is the package's Open in the language of msgs.
 func (msgs Messages) Open() string { return msgs.text(textOpen) }
+
+// Share says "Share"
+// in the language the app shows under cx.
+func Share(cx *core.Scope) string { return For(cx).Share() }
+
+// Share is the package's Share in the language of msgs.
+func (msgs Messages) Share() string { return msgs.text(textShare) }
+
+// OpenFolder says "Open folder"
+// in the language the app shows under cx.
+func OpenFolder(cx *core.Scope) string { return For(cx).OpenFolder() }
+
+// OpenFolder is the package's OpenFolder in the language of msgs.
+func (msgs Messages) OpenFolder() string { return msgs.text(textOpenFolder) }
 
 // LinkLocal says "Local network"
 // in the language the app shows under cx.

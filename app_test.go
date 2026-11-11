@@ -1,10 +1,15 @@
 package main
 
 import (
+	"encoding/json"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/oneo-me/nsgo-localsend/internal/localsend"
+	"github.com/oneo-me/nsgo/core"
 	"github.com/oneo-me/nsgo/nsgotest"
 )
 
@@ -114,4 +119,59 @@ func TestSidebarFooterOpensSettings(t *testing.T) {
 	if !app.Exists("id:settings-alias") {
 		t.Fatal("the sidebar's device did not open settings")
 	}
+}
+
+// TestOpenReceivedFolder opens a received folder in the file manager on
+// a desktop, and offers its files to the share sheet on a phone, which has
+// no other way to reach them.
+func TestOpenReceivedFolder(t *testing.T) {
+	t.Setenv("LOCALSEND_OFFLINE", "1")
+	dir := filepath.Join(t.TempDir(), "photos")
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	var files []transferFile
+	for _, name := range []string{"a.jpg", "b.jpg"} {
+		path := filepath.Join(dir, name)
+		if err := os.WriteFile(path, []byte(name), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		files = append(files, transferFile{ID: name, Name: "photos/" + name, Size: 5, Done: 5, Status: "done", Path: path})
+	}
+	history, _ := json.Marshal([]transfer{{ID: "s1", Direction: "receive", Peer: localsend.Device{Alias: "Phone"},
+		Status: statusCompleted, Files: files, Total: 10, Done: 10, Started: time.Now(), Ended: time.Now(), SavedDir: dir}})
+	start := func(t *testing.T, os core.OS) *nsgotest.App {
+		app := nsgotest.Start(t, Root, nsgotest.Size(1100, 760),
+			nsgotest.Environment(core.Environment{OS: os, Locale: "en-US"}),
+			nsgotest.Storage(map[string]string{"history": string(history)}))
+		skipIfNoSidebar(t, app)
+		app.Press("id:nav-transfers")
+		app.WaitFor("text:Completed", 2*time.Second)
+		if app.Exists("id:open-received") {
+			t.Fatal("a received folder offered to open as one file")
+		}
+		return app
+	}
+	t.Run("desktop", func(t *testing.T) {
+		app := start(t, core.OSMacOS)
+		if !app.Exists("id:open-received-folder") {
+			t.Skip("the target has no file manager")
+		}
+		app.Press("id:open-received-folder")
+		app.Advance(time.Second)
+		if len(app.OpenedFiles) != 1 || app.OpenedFiles[0].Path != dir {
+			t.Fatalf("opened = %+v", app.OpenedFiles)
+		}
+	})
+	t.Run("phone", func(t *testing.T) {
+		app := start(t, core.OSIOS)
+		if !app.Exists("id:share-received") {
+			t.Skip("the target has no share sheet")
+		}
+		app.Press("id:share-received")
+		app.Advance(time.Second)
+		if len(app.Shares) != 1 || len(app.Shares[0].Files) != 2 {
+			t.Fatalf("shares = %+v", app.Shares)
+		}
+	})
 }

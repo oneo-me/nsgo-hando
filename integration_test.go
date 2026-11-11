@@ -226,6 +226,13 @@ func TestReceiveFileFromPeer(t *testing.T) {
 
 	app.WaitFor("id:incoming-dialog", 5*time.Second)
 	app.Press("id:incoming-accept")
+	// A toast shown from the closing dialog still closes.
+	app.WaitFor("id:toast-1", 5*time.Second)
+	app.Press("id:toast-1-close")
+	app.Advance(time.Second)
+	if app.Exists("id:toast-1") {
+		t.Fatal("the toast shown on accepting stayed after its close button")
+	}
 	var a answer
 	select {
 	case a = <-answered:

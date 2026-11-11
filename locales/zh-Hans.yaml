@@ -141,6 +141,8 @@ textMessage: 文字消息
 aboutDetail: 使用 NSGo 构建的原生文件互传应用，与 LocalSend 兼容。
 savedTo: "已保存到 {path}"
 open: 打开
+share: 分享
+openFolder: 打开文件夹
 linkLocal: 局域网
 resizeSidebar: 调整侧边栏宽度
 chooseFolderUnavailable: 此平台无法使用该文件夹。

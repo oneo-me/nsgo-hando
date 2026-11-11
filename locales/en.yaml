@@ -141,6 +141,8 @@ textMessage: Text message
 aboutDetail: A native file sharing app built with NSGo, compatible with LocalSend.
 savedTo: "Saved to {path}"
 open: Open
+share: Share
+openFolder: Open folder
 linkLocal: Local network
 resizeSidebar: Resize sidebar
 chooseFolderUnavailable: That folder cannot be used on this platform.

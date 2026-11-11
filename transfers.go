@@ -114,9 +114,17 @@ func (a *app) transferCard(cx *core.Scope, t *transfer) core.Node {
 		actions = append(actions, ui.IconButton{Icon: lucide.X, Label: l.Cancel(), Size: 26, IconSize: 15, Tint: colors.Muted,
 			OnPress: func() { a.cancelTransfer(t) }, TestID: "cancel-transfer"})
 	}
-	if !running && t.Direction == "receive" && t.Status == statusCompleted && len(t.Files) == 1 && t.Files[0].Path != "" {
-		actions = append(actions, ui.Button{Text: l.Open(), Variant: ui.ButtonSecondary, Size: ui.SizeSmall,
-			Icon: lucide.ExternalLink, OnPress: func() { a.openReceived(t) }, TestID: "open-received"})
+	if !running && t.Direction == "receive" && t.Status == statusCompleted {
+		if received := receivedFiles(t); len(received) == 1 {
+			actions = append(actions, ui.Button{Text: l.Open(), Variant: ui.ButtonSecondary, Size: ui.SizeSmall,
+				Icon: lucide.ExternalLink, OnPress: func() { a.openReceived(t) }, TestID: "open-received"})
+		} else if len(received) > 1 && t.SavedDir != "" && hasFileManager(cx) {
+			actions = append(actions, ui.Button{Text: l.OpenFolder(), Variant: ui.ButtonSecondary, Size: ui.SizeSmall,
+				Icon: lucide.FolderOpen, OnPress: func() { a.openReceivedFolder(t) }, TestID: "open-received-folder"})
+		} else if len(received) > 1 && canShare(cx) {
+			actions = append(actions, ui.Button{Text: l.Share(), Variant: ui.ButtonSecondary, Size: ui.SizeSmall,
+				Icon: lucide.Share, OnPress: func() { a.shareReceived(t) }, TestID: "share-received"})
+		}
 	}
 	var body []core.Node
 	body = append(body, core.View{Style: core.Style{Direction: core.Row, AlignItems: core.AlignCenter, Gap: 10}, Children: []core.Node{
@@ -242,17 +250,71 @@ func (a *app) cancelTransfer(t *transfer) {
 	}
 }
 
+// receivedFiles are a transfer's files that reached the receive folder.
+func receivedFiles(t *transfer) []core.SharedFile {
+	var out []core.SharedFile
+	for _, f := range t.Files {
+		if f.Path != "" {
+			out = append(out, core.SharedFile{Path: f.Path, Name: f.Name})
+		}
+	}
+	return out
+}
+
+// hasFileManager reports whether the platform opens a folder in a file
+// manager.
+func hasFileManager(cx *core.Scope) bool {
+	switch cx.Env().OS() {
+	case core.OSMacOS, core.OSWindows, core.OSLinux:
+		return true
+	}
+	return false
+}
+
+// canShare reports whether the platform has a share sheet. A received
+// folder has no other way out of a phone app's storage, since files open
+// one at a time.
+func canShare(cx *core.Scope) bool {
+	switch cx.Env().OS() {
+	case core.OSIOS, core.OSAndroid:
+		return true
+	}
+	return false
+}
+
 // openReceived opens a received file.
 func (a *app) openReceived(t *transfer) {
-	if len(t.Files) != 1 || t.Files[0].Path == "" {
+	received := receivedFiles(t)
+	if len(received) != 1 {
 		return
 	}
-	file := t.Files[0]
-	a.cx.OpenFile(core.SharedFile{Path: file.Path, Name: file.Name}, func(opened bool, err error) {
+	file := received[0]
+	a.cx.OpenFile(file, func(opened bool, err error) {
 		if err != nil {
 			a.toastError(locales.Open(a.cx), err.Error())
 		} else if !opened {
 			a.toastError(locales.Open(a.cx), file.Path)
+		}
+	})
+}
+
+// openReceivedFolder shows a received folder in the file manager.
+func (a *app) openReceivedFolder(t *transfer) {
+	a.cx.OpenFile(core.SharedFile{Path: t.SavedDir}, func(opened bool, err error) {
+		if err != nil {
+			a.toastError(locales.OpenFolder(a.cx), err.Error())
+		} else if !opened {
+			a.toastError(locales.OpenFolder(a.cx), t.SavedDir)
+		}
+	})
+}
+
+// shareReceived hands a received folder's files to the share sheet, where
+// they can be saved to the system's files or opened in another app.
+func (a *app) shareReceived(t *transfer) {
+	a.cx.Share(core.ShareOptions{Files: receivedFiles(t)}, func(shown bool, err error) {
+		if err != nil {
+			a.toastError(locales.Share(a.cx), err.Error())
 		}
 	})
 }
