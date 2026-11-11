@@ -3,16 +3,15 @@ import Icon from './Icon.astro';
 import Logo from './Logo.astro';
 import DownloadLink from './DownloadLink.astro';
 import { copies, languageNames } from '../copy';
-import { homeAnchor, links, localePath, pageUrl, type Lang, type PageId } from '../site';
+import { homeAnchor, links, localePath, pageUrl, type Lang } from '../site';
 
 interface Props {
   lang: Lang;
-  page?: PageId;
   path: string;
   over?: boolean;
 }
 
-const { lang, page, path, over = false } = Astro.props;
+const { lang, path, over = false } = Astro.props;
 const copy = copies[lang];
 const other: Lang = lang === 'en' ? 'zh' : 'en';
 const home = pageUrl(lang, 'home');
@@ -35,9 +34,13 @@ const nav = [
       ))}
       <a
         class="header__link header__link--page"
-        href={pageUrl(lang, 'download')}
-        aria-current={page === 'download' ? 'page' : undefined}>{copy.nav.download}</a
+        href={links.releases}
+        target="_blank"
+        rel="noopener noreferrer"
       >
+        {copy.nav.download}
+        <Icon name="external" size={13} />
+      </a>
       <a
         class="header__link header__link--page"
         href={links.repo}
@@ -86,22 +89,15 @@ const nav = [
         <Icon name="moon" size={17} class="theme-switch__to-dark" />
         <Icon name="sun" size={17} class="theme-switch__to-light" />
       </button>
-      {page === 'download' ? (
-        <a
-          class="btn btn--primary header__cta"
-          href={links.releases}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Icon name="download" size={16} />
-          {copy.common.latest}
-        </a>
-      ) : (
-        <a class="btn btn--primary header__cta" href={pageUrl(lang, 'download')}>
-          <Icon name="download" size={16} />
-          {copy.nav.download}
-        </a>
-      )}
+      <a
+        class="btn btn--primary header__cta"
+        href={links.releases}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icon name="download" size={16} />
+        {copy.nav.download}
+      </a>
       <button
         type="button"
         class="icon-button header__burger"

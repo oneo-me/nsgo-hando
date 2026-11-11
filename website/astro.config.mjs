@@ -6,10 +6,18 @@ import sitemap from '@astrojs/sitemap';
 // to another repository or a custom domain.
 const base = '/nsgo-hando/';
 
+const releases = 'https://github.com/oneo-me/nsgo-hando/releases/latest';
+
 export default defineConfig({
   site: 'https://oneo-me.github.io',
   base,
   trailingSlash: 'always',
   devToolbar: { enabled: false },
   integrations: [sitemap()],
+  // Downloads open the latest GitHub release; keep the former page's links
+  // working with a client redirect.
+  redirects: {
+    '/download': releases,
+    '/zh/download': releases,
+  },
 });

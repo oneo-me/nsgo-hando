@@ -21,15 +21,9 @@ export interface Copy {
   common: {
     download: string;
     downloadFor: Record<'macos' | 'windows' | 'linux' | 'android' | 'ios', string>;
-    free: string;
-    latest: string;
-    allReleases: string;
     source: string;
     github: string;
-    external: string;
-    home: string;
     backHome: string;
-    faq: string;
   };
   mock: {
     nearby: string;
@@ -129,28 +123,6 @@ export interface Copy {
       items: { q: string; a: string }[];
     };
   };
-  download: {
-    title: string;
-    description: string;
-    hero: {
-      eyebrow: string;
-      title: string;
-      lead: string;
-      latest: string;
-      note: string;
-    };
-    platforms: Record<'macos' | 'windows' | 'linux' | 'android' | 'ios', { note: string; format: string }>;
-    open: string;
-    you: string;
-    after: {
-      title: string;
-      lead: string;
-      steps: Record<'macos' | 'windows' | 'linux' | 'android' | 'ios', string>;
-    };
-    needs: { title: string; items: string[] };
-    verify: { title: string; body: string; workflow: string; source: string };
-    build: { title: string; body: string; note: string };
-  };
   privacy: {
     title: string;
     description: string;
@@ -209,15 +181,9 @@ const en: Copy = {
       android: 'Download for Android',
       ios: 'Download for iOS',
     },
-    free: 'Free and open source',
-    latest: 'Latest release',
-    allReleases: 'All releases',
     source: 'Source',
     github: 'GitHub',
-    external: 'Opens in a new tab',
-    home: 'Home',
     backHome: 'Back to home',
-    faq: 'Questions',
   },
   mock: {
     nearby: 'Nearby devices',
@@ -420,62 +386,6 @@ const en: Copy = {
       ],
     },
   },
-  download: {
-    title: 'Download Hando — macOS, Windows, Linux, iOS and Android',
-    description:
-      'Download Hando for macOS, Windows, Linux, Android or iOS. Free, open source, and built from source by GitHub Actions.',
-    hero: {
-      eyebrow: 'Download',
-      title: 'Get Hando.',
-      lead: 'The latest release, built for your platform. Free and MIT-licensed; every package comes from the release workflow.',
-      latest: 'Open the latest release',
-      note: 'Version notes and all files are on GitHub.',
-    },
-    platforms: {
-      macos: { note: 'For Apple silicon and Intel Macs.', format: 'DMG' },
-      windows: { note: 'Installer for x64 and arm64 PCs.', format: 'Setup .exe' },
-      linux: { note: 'For x64 and arm64: a .deb package or an Arch package.', format: 'DEB · pkg.tar.gz' },
-      android: { note: 'APK for arm64 phones and tablets.', format: 'APK' },
-      ios: {
-        note: 'Unsigned IPA; sign it with your own Apple ID or developer profile.',
-        format: 'IPA',
-      },
-    },
-    open: 'Open release',
-    you: 'Your platform',
-    after: {
-      title: 'After the download',
-      lead: 'Each package is a normal app install. A few notes are worth knowing.',
-      steps: {
-        macos:
-          'Open the .dmg and drag Hando to Applications. If macOS says the app can’t be verified, allow it in System Settings → Privacy & Security.',
-        windows:
-          'Run the setup .exe. The installer is not distributed through a store, so Windows may ask for confirmation.',
-        linux: 'Install with sudo apt install ./Hando-*.deb, or sudo pacman -U Hando-*.pkg.tar.gz.',
-        android: 'Open the APK. Android will ask you to allow installs from your browser or file manager.',
-        ios: 'The IPA is unsigned. Sign it with AltStore, Sideloadly or your own developer profile, then trust it in Settings.',
-      },
-    },
-    needs: {
-      title: 'What you need',
-      items: [
-        'Both devices on the same Wi-Fi or local network.',
-        'macOS, Windows, Linux, Android or iOS — Hando runs natively on each.',
-        'No account, no subscription and no internet connection.',
-      ],
-    },
-    verify: {
-      title: 'Built in the open',
-      body: 'Releases are built by GitHub Actions from the repository and published with the version’s changelog. The source is MIT-licensed.',
-      workflow: 'Release workflow',
-      source: 'Source code',
-    },
-    build: {
-      title: 'Build it yourself',
-      body: 'Hando needs Go 1.26 or later. These commands build every target and run the test suite.',
-      note: 'Apple targets need Xcode, and Android needs the Android SDK’s platform-tools.',
-    },
-  },
   privacy: {
     title: 'Privacy — Hando',
     description: 'How Hando and this website handle your data: local transfers, no accounts and anonymous usage statistics.',
@@ -558,15 +468,9 @@ const zh: Copy = {
       android: '下载 Android 版',
       ios: '下载 iOS 版',
     },
-    free: '免费开源',
-    latest: '最新版本',
-    allReleases: '所有版本',
     source: '源代码',
     github: 'GitHub',
-    external: '在新标签页中打开',
-    home: '首页',
     backHome: '返回首页',
-    faq: '常见问题',
   },
   mock: {
     nearby: '附近设备',
@@ -767,60 +671,6 @@ const zh: Copy = {
           a: '除非配置了签名描述文件，iOS 安装包是未签名的 .ipa。安装前需要用你的 Apple ID 或开发者描述文件签名。',
         },
       ],
-    },
-  },
-  download: {
-    title: '下载 Hando — macOS、Windows、Linux、iOS 与 Android',
-    description: '下载适用于 macOS、Windows、Linux、Android 或 iOS 的 Hando。免费开源，安装包由 GitHub Actions 从源码构建。',
-    hero: {
-      eyebrow: '下载',
-      title: '获取 Hando',
-      lead: '最新版本，为你的平台而构建。免费且使用 MIT 许可证；每个安装包都来自发布流程。',
-      latest: '打开最新版本',
-      note: '版本说明和全部文件都在 GitHub 上。',
-    },
-    platforms: {
-      macos: { note: '适用于 Apple 芯片和 Intel Mac。', format: 'DMG' },
-      windows: { note: '适用于 x64 和 arm64 PC 的安装程序。', format: '安装包 .exe' },
-      linux: { note: '适用于 x64 和 arm64：.deb 包或 Arch 包。', format: 'DEB · pkg.tar.gz' },
-      android: { note: '适用于 arm64 手机和平板的 APK。', format: 'APK' },
-      ios: {
-        note: '未签名的 IPA；需要用你的 Apple ID 或开发者描述文件签名。',
-        format: 'IPA',
-      },
-    },
-    open: '打开版本页',
-    you: '你的平台',
-    after: {
-      title: '下载之后',
-      lead: '每个安装包都按常规方式安装。有几点值得留意。',
-      steps: {
-        macos:
-          '打开 .dmg，把 Hando 拖进“应用程序”。如果 macOS 提示无法验证，可在“系统设置 → 隐私与安全性”中允许打开。',
-        windows: '运行安装程序。安装包不通过应用商店分发，Windows 可能要求确认。',
-        linux: '使用 sudo apt install ./Hando-*.deb 安装，或使用 sudo pacman -U Hando-*.pkg.tar.gz。',
-        android: '打开 APK。Android 会要求允许浏览器或文件管理器安装应用。',
-        ios: 'IPA 未签名。请使用 AltStore、Sideloadly 或自己的开发者描述文件签名，然后在“设置”中信任它。',
-      },
-    },
-    needs: {
-      title: '需要什么',
-      items: [
-        '两台设备连接同一个 Wi-Fi 或局域网。',
-        'macOS、Windows、Linux、Android 或 iOS——Hando 在每个平台上原生运行。',
-        '不需要账号、订阅或互联网连接。',
-      ],
-    },
-    verify: {
-      title: '公开构建',
-      body: '每个版本都由 GitHub Actions 从仓库构建，并附上对应版本的更新日志。源码使用 MIT 许可证。',
-      workflow: '发布流程',
-      source: '源代码',
-    },
-    build: {
-      title: '自己构建',
-      body: 'Hando 需要 Go 1.26 或更高版本。以下命令构建所有目标并运行测试。',
-      note: 'Apple 平台需要 Xcode，Android 需要 Android SDK 的 platform-tools。',
     },
   },
   privacy: {

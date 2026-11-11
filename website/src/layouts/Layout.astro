@@ -122,7 +122,7 @@ const altPath = page ? localePath(lang === 'en' ? 'zh' : 'en', path) : null;
   </head>
   <body class:list={[over && 'has-over-header']}>
     <a class="skip-link" href="#main">{copy.nav.skip}</a>
-    <Header lang={lang} page={page} path={path} over={over} />
+    <Header lang={lang} path={path} over={over} />
     <main id="main">
       <slot />
     </main>

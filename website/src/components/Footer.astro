@@ -33,7 +33,10 @@ const home = pageUrl(lang, 'home');
           <p class="footer__heading">{copy.product}</p>
           <a href={homeAnchor(lang, 'features')}>{copy.features}</a>
           <a href={homeAnchor(lang, 'compatibility')}>{copy.compatibility}</a>
-          <a href={pageUrl(lang, 'download')}>{copy.download}</a>
+          <a href={links.releases} target="_blank" rel="noopener noreferrer">
+            {copy.download}
+            <Icon name="external" size={12} />
+          </a>
           <a href={pageUrl(lang, 'privacy')}>{copy.privacy}</a>
         </div>
         <div class="footer__group">

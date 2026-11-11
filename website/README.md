@@ -1,8 +1,8 @@
 # Hando website
 
 The site at <https://oneo-me.github.io/nsgo-hando/>: static Astro pages
-in English and Chinese, with no UI framework. It presents the app, its
-LocalSend compatibility and its downloads, and links to this repository's
+in English and Chinese, with no UI framework. It presents the app and its
+LocalSend compatibility, and sends downloads to this repository's GitHub
 releases.
 
 ```sh
@@ -27,9 +27,10 @@ social URLs follow them.
 | Page | Path | Chinese |
 | --- | --- | --- |
 | Home | `/` | `/zh/` |
-| Download | `/download/` | `/zh/download/` |
 | Privacy | `/privacy/` | `/zh/privacy/` |
 | Not found | `/404.html` | English only |
+
+The former download pages redirect to the latest GitHub release.
 
 English lives at the base and Chinese under `zh/`. A first visit from a
 Chinese browser opens the Chinese page; the language link remembers a
@@ -39,11 +40,12 @@ languages together, and keep Chinese headings and titles free of a trailing
 
 ## Look
 
-The app's palette: a deep forest hero, warm paper sections and mint cards,
-with the app's real screens and small UI echoes in the feature cards. The
-appearance follows the system at first and can be switched in the header;
-`hando-theme` keeps it. `src/styles/global.css` has all tokens and layout;
-`src/components/Icon.astro` is the small line-icon set.
+The app's palette: a hero in mint paper or deep forest with the page's
+appearance, warm paper sections and mint cards, with the app's real screens
+and small UI echoes in the feature cards. The appearance follows the system
+unless a choice is made in the header, and the hero switches with it;
+`hando-theme` keeps the choice. `src/styles/global.css` has all tokens and
+layout; `src/components/Icon.astro` is the small line-icon set.
 
 The app icon and screenshots in `src/assets/` and the favicons in `public/`
 are copies of `../assets/Icon.png` and `../assets/screenshots/`. Run

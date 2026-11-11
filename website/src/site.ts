@@ -5,11 +5,10 @@
 export type Lang = 'en' | 'zh';
 export const langs: Lang[] = ['en', 'zh'];
 
-export type PageId = 'home' | 'download' | 'privacy';
+export type PageId = 'home' | 'privacy';
 
 export const pages: { id: PageId; path: string }[] = [
   { id: 'home', path: '' },
-  { id: 'download', path: 'download/' },
   { id: 'privacy', path: 'privacy/' },
 ];
 
@@ -48,7 +47,6 @@ export const links = {
   protocol: 'https://github.com/localsend/protocol',
   license: `${repo}/blob/main/LICENSE`,
   changelog: `${repo}/blob/main/CHANGELOG.md`,
-  workflow: `${repo}/blob/main/.github/workflows/release.yml`,
   blog: 'https://oneo.me',
   x: 'https://x.com/oneo666',
   nsgo: 'https://github.com/oneo-me/nsgo',
