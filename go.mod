@@ -3,7 +3,7 @@ module github.com/oneo-me/nsgo-localsend
 go 1.26.0
 
 require (
-	github.com/oneo-me/nsgo v0.0.0-20261111061034-711bac2b0ee2
+	github.com/oneo-me/nsgo v0.0.0-20261111095555-9e560218799e
 	golang.org/x/net v0.58.0
 	golang.org/x/sys v0.47.0
 	golang.org/x/text v0.43.0
