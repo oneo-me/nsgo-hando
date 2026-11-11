@@ -39,7 +39,7 @@ Hando is an NSGo app whose screens are Go components and signals, with the Local
 
 **Send.** The app creates a transfer and a send job, then calls `prepare-upload` with the peer's pinned client. A receiver that asks for a PIN reopens the job through the prompt; a rejection, a busy receiver or a refused PIN ends the transfer with a reason the screen localizes. Accepted files upload one after another, with progress posted to the engine, and a cancel closes the request context and tells the receiver to end the session.
 
-**Receive.** The server emits a prepare request; the app accepts it after the review dialog, or at once for a favorite with Quick Save. The server plans safe destinations, returns one token per accepted file, writes uploads with progress, verifies checksums and ends the session once every accepted file is final. The app mirrors the result into the transfer list and history.
+**Receive.** The server emits a prepare request; the app accepts it after the review dialog, or at once for a favorite with Quick Save. The server plans safe destinations, returns one token per accepted file, writes uploads with progress, verifies checksums and ends the session once every accepted file is final. The app mirrors the result into the transfer list and history. On iOS, which has no app to open a received folder, a session that received one packs its files into a single zip beside them and the transfer opens that instead.
 
 **Receiver restart.** Changing the port, the protocol or checksum verification cancels active sends, stops the old node, and starts a new one with the current settings. Changing the alias or PIN does not restart it, since callbacks read those live.
 

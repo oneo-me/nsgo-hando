@@ -119,10 +119,12 @@ const (
 	textActive
 	textReceiving
 	textSending
+	textCompressing
 	textCompleted
 	textFailed
 	textCancelled
 	textDeclined
+	textArchiveFailed
 	textNoTransfers
 	textNoTransfersDetail
 	textActiveTransfers
@@ -259,10 +261,12 @@ var keyOfText = [numTexts]string{
 	"active",
 	"receiving",
 	"sending",
+	"compressing",
 	"completed",
 	"failed",
 	"cancelled",
 	"declined",
+	"archiveFailed",
 	"noTransfers",
 	"noTransfersDetail",
 	"activeTransfers",
@@ -397,10 +401,12 @@ var textsEn = i18n.NewTexts(""+
 	"Transferring"+
 	"Receiving"+
 	"Sending"+
+	"Compressing"+
 	"Completed"+
 	"Failed"+
 	"Cancelled"+
 	"Declined"+
+	"The received folder could not be compressed."+
 	"No transfers yet"+
 	"Files you send or receive show here with their progress."+
 	"In progress"+
@@ -532,10 +538,12 @@ var textsEn = i18n.NewTexts(""+
 		12,
 		9,
 		7,
+		11,
 		9,
 		6,
 		9,
 		8,
+		44,
 		16,
 		56,
 		11,
@@ -670,10 +678,12 @@ var textsZhHans = i18n.NewTexts(""+
 	"传输中"+
 	"接收中"+
 	"发送中"+
+	"正在压缩"+
 	"已完成"+
 	"失败"+
 	"已取消"+
 	"已拒绝"+
+	"无法压缩接收到的文件夹。"+
 	"还没有传输"+
 	"你发送或接收的文件会在这里显示进度。"+
 	"进行中"+
@@ -805,10 +815,12 @@ var textsZhHans = i18n.NewTexts(""+
 		9,
 		9,
 		9,
+		12,
 		9,
 		6,
 		9,
 		9,
+		36,
 		15,
 		54,
 		9,
@@ -1532,6 +1544,13 @@ func Sending(cx *core.Scope) string { return For(cx).Sending() }
 // Sending is the package's Sending in the language of msgs.
 func (msgs Messages) Sending() string { return msgs.text(textSending) }
 
+// Compressing says "Compressing"
+// in the language the app shows under cx.
+func Compressing(cx *core.Scope) string { return For(cx).Compressing() }
+
+// Compressing is the package's Compressing in the language of msgs.
+func (msgs Messages) Compressing() string { return msgs.text(textCompressing) }
+
 // Completed says "Completed"
 // in the language the app shows under cx.
 func Completed(cx *core.Scope) string { return For(cx).Completed() }
@@ -1627,6 +1646,13 @@ func (msgs Messages) TransferError(name string, error_ string) string {
 		}
 	}
 }
+
+// ArchiveFailed says "The received folder could not be compressed."
+// in the language the app shows under cx.
+func ArchiveFailed(cx *core.Scope) string { return For(cx).ArchiveFailed() }
+
+// ArchiveFailed is the package's ArchiveFailed in the language of msgs.
+func (msgs Messages) ArchiveFailed() string { return msgs.text(textArchiveFailed) }
 
 // NoTransfers says "No transfers yet"
 // in the language the app shows under cx.

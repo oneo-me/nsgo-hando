@@ -1,7 +1,6 @@
 package main
 
 import (
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -258,8 +257,14 @@ func (a *app) receiveDone(result localsend.SessionResult) {
 	} else {
 		status = statusFailed
 	}
+	// iOS opens a folder only as an archive, so a folder send is packed
+	// when it ends and the transfer opens the zip.
+	archiving := status == statusCompleted && a.cx.Env().OS() == core.OSIOS && hasReceivedFolders(result.Files)
 	t := a.updateTransfer(result.SessionID, func(t *transfer) {
 		t.Status, t.Ended, t.CancelRequested, t.Speed = status, time.Now(), false, 0
+		if archiving {
+			t.Status = statusArchiving
+		}
 		byID := make(map[string]localsend.ReceivedFile, len(result.Files))
 		for _, f := range result.Files {
 			byID[f.ID] = f
@@ -287,14 +292,16 @@ func (a *app) receiveDone(result localsend.SessionResult) {
 		if status == statusCompleted {
 			t.Done = t.Total
 		}
-		for _, received := range result.Files {
-			if received.Path != "" {
-				t.SavedDir = filepath.Dir(received.Path)
-				break
-			}
-		}
 	})
 	if t == nil {
+		return
+	}
+	if archiving {
+		id, dir, files := t.ID, t.SavedDir, append([]transferFile(nil), t.Files...)
+		go func() {
+			path, err := archiveReceivedFolders(dir, files)
+			a.cx.Post(func() { a.receiveArchived(id, path, err) })
+		}()
 		return
 	}
 	a.rememberTransfer(t)

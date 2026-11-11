@@ -54,6 +54,7 @@ waitingShort: 等待中
 active: 传输中
 receiving: 接收中
 sending: 发送中
+compressing: 正在压缩
 completed: 已完成
 failed: 失败
 cancelled: 已取消
@@ -61,6 +62,7 @@ declined: 已拒绝
 transferSent: 已发送到 {name}
 transferReceived: 已接收自 {name}
 transferError: "{name} 失败：{error}"
+archiveFailed: 无法压缩接收到的文件夹。
 noTransfers: 还没有传输
 noTransfersDetail: 你发送或接收的文件会在这里显示进度。
 activeTransfers: 进行中

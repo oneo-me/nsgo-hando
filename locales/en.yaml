@@ -54,6 +54,7 @@ waitingShort: Waiting
 active: Transferring
 receiving: Receiving
 sending: Sending
+compressing: Compressing
 completed: Completed
 failed: Failed
 cancelled: Cancelled
@@ -61,6 +62,7 @@ declined: Declined
 transferSent: Sent to {name}
 transferReceived: Received from {name}
 transferError: "{name} failed: {error}"
+archiveFailed: The received folder could not be compressed.
 noTransfers: No transfers yet
 noTransfersDetail: Files you send or receive show here with their progress.
 activeTransfers: In progress

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"path/filepath"
 	"sort"
 	"strings"
 	"time"
@@ -51,11 +52,11 @@ func (a *app) sectionTitle(cx *core.Scope, title string, count string) core.Node
 	}}
 }
 
-// activeTransfers are sessions still running.
+// activeTransfers are sessions still running or archiving what arrived.
 func (a *app) activeTransfers() []*transfer {
 	var out []*transfer
 	for _, t := range a.transfers.Get() {
-		if t.Status == statusWaiting || t.Status == statusActive {
+		if t.Status == statusWaiting || t.Status == statusActive || t.Status == statusArchiving {
 			out = append(out, t)
 		}
 	}
@@ -68,7 +69,7 @@ func (a *app) finishedTransfers() []*transfer {
 	var out []*transfer
 	seen := map[string]bool{}
 	for _, t := range a.transfers.Get() {
-		if t.Status == statusWaiting || t.Status == statusActive {
+		if t.Status == statusWaiting || t.Status == statusActive || t.Status == statusArchiving {
 			continue
 		}
 		copy := *t
@@ -115,7 +116,10 @@ func (a *app) transferCard(cx *core.Scope, t *transfer) core.Node {
 			OnPress: func() { a.cancelTransfer(t) }, TestID: "cancel-transfer"})
 	}
 	if !running && t.Direction == "receive" && t.Status == statusCompleted {
-		if received := receivedFiles(t); len(received) == 1 {
+		if t.Archive != "" {
+			actions = append(actions, ui.Button{Text: l.Open(), Variant: ui.ButtonSecondary, Size: ui.SizeSmall,
+				Icon: lucide.ExternalLink, OnPress: func() { a.openReceived(t) }, TestID: "open-received"})
+		} else if received := receivedFiles(t); len(received) == 1 {
 			actions = append(actions, ui.Button{Text: l.Open(), Variant: ui.ButtonSecondary, Size: ui.SizeSmall,
 				Icon: lucide.ExternalLink, OnPress: func() { a.openReceived(t) }, TestID: "open-received"})
 		} else if len(received) > 1 && t.SavedDir != "" && hasFileManager(cx) {
@@ -147,7 +151,11 @@ func (a *app) transferCard(cx *core.Scope, t *transfer) core.Node {
 			}},
 		}})
 	} else if t.Status == statusCompleted && t.Direction == "receive" && t.SavedDir != "" {
-		body = append(body, core.Text{Content: l.SavedTo(t.SavedDir), MaxLines: 2, Style: core.Style{FontSize: 11},
+		detail := t.SavedDir
+		if t.Archive != "" {
+			detail = t.Archive
+		}
+		body = append(body, core.Text{Content: l.SavedTo(detail), MaxLines: 2, Style: core.Style{FontSize: 11},
 			StyleFunc: ui.Colored(colors.Faint)})
 	}
 	if reason != "" && t.Status != statusCompleted {
@@ -183,7 +191,7 @@ func statusVariant(status string) ui.BadgeVariant {
 		return ui.BadgeNeutral
 	case statusWaiting:
 		return ui.BadgeWarn
-	case statusActive:
+	case statusActive, statusArchiving:
 		return ui.BadgeInfo
 	}
 	return ui.BadgeNeutral
@@ -282,13 +290,16 @@ func canShare(cx *core.Scope) bool {
 	return false
 }
 
-// openReceived opens a received file.
+// openReceived opens a received file, or the archive a folder arrived as.
 func (a *app) openReceived(t *transfer) {
-	received := receivedFiles(t)
-	if len(received) != 1 {
-		return
+	file := core.SharedFile{Path: t.Archive, Name: filepath.Base(t.Archive)}
+	if t.Archive == "" {
+		received := receivedFiles(t)
+		if len(received) != 1 {
+			return
+		}
+		file = received[0]
 	}
-	file := received[0]
 	a.cx.OpenFile(file, func(opened bool, err error) {
 		if err != nil {
 			a.toastError(locales.Open(a.cx), err.Error())
@@ -309,10 +320,15 @@ func (a *app) openReceivedFolder(t *transfer) {
 	})
 }
 
-// shareReceived hands a received folder's files to the share sheet, where
-// they can be saved to the system's files or opened in another app.
+// shareReceived hands a received folder's files, or its archive, to the
+// share sheet, where they can be saved to the system's files or opened in
+// another app.
 func (a *app) shareReceived(t *transfer) {
-	a.cx.Share(core.ShareOptions{Files: receivedFiles(t)}, func(shown bool, err error) {
+	files := receivedFiles(t)
+	if t.Archive != "" {
+		files = []core.SharedFile{{Path: t.Archive, Name: filepath.Base(t.Archive)}}
+	}
+	a.cx.Share(core.ShareOptions{Files: files}, func(shown bool, err error) {
 		if err != nil {
 			a.toastError(locales.Share(a.cx), err.Error())
 		}
@@ -325,7 +341,7 @@ func (a *app) clearHistory() {
 	a.transfers.Update(func(list []*transfer) []*transfer {
 		out := list[:0]
 		for _, t := range list {
-			if t.Status == statusWaiting || t.Status == statusActive {
+			if t.Status == statusWaiting || t.Status == statusActive || t.Status == statusArchiving {
 				out = append(out, t)
 			}
 		}

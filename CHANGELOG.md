@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Pack a folder received on iOS into one zip.
+
 ## [0.2026.1] - 2026-11-11
 
 The first release of Hando, a file sharing app for macOS, Windows, Linux, iOS and Android that works with LocalSend devices.

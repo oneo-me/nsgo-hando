@@ -11,11 +11,13 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"testing"
 	"time"
 
+	"github.com/oneo-me/nsgo/core"
 	"github.com/oneo-me/nsgo/nsgotest"
 
 	"github.com/oneo-me/nsgo-localsend/internal/localsend"
@@ -340,5 +342,114 @@ func TestDroppedPath(t *testing.T) {
 		if filepath.ToSlash(got) != want {
 			t.Errorf("droppedPath(%q) = %q, want %q", uri, got, want)
 		}
+	}
+}
+
+// TestReceiveFolderOnIOS packs a received folder into one zip, which iOS's
+// apps can open where they cannot open the folder.
+func TestReceiveFolderOnIOS(t *testing.T) {
+	if target := nsgotest.Target(); target != "" && target != "ios_simulator" {
+		t.Skip("the target runs its own platform")
+	}
+	port := freePort(t)
+	dir := t.TempDir()
+	p := newPeer(t)
+	app := nsgotest.Start(t, Root, nsgotest.Size(1000, 720),
+		nsgotest.Environment(core.Environment{OS: core.OSIOS, Locale: "en-US"}),
+		nsgotest.Storage(seededStorage(port, dir)))
+	waitServer(t, port)
+
+	names := []string{"photos/a.txt", "photos/sub/b.txt"}
+	files := make(map[string]localsend.File, len(names))
+	contents := make(map[string][]byte, len(names))
+	for i, name := range names {
+		data := []byte("sent " + name)
+		id := fmt.Sprintf("f%d", i)
+		files[id] = localsend.File{ID: id, FileName: name, Size: int64(len(data)), FileType: "text/plain"}
+		contents[id] = data
+	}
+	body, _ := json.Marshal(localsend.PrepareUploadRequest{Info: p.self(), Files: files})
+	type answer struct {
+		response localsend.PrepareUploadResponse
+		err      error
+	}
+	answered := make(chan answer, 1)
+	go func() {
+		res, err := http.Post(fmt.Sprintf("http://127.0.0.1:%d%s/prepare-upload", port, localsend.APIPrefix), "application/json", bytes.NewReader(body))
+		if err != nil {
+			answered <- answer{err: err}
+			return
+		}
+		defer res.Body.Close()
+		if res.StatusCode != http.StatusOK {
+			data, _ := io.ReadAll(res.Body)
+			answered <- answer{err: fmt.Errorf("status %d: %s", res.StatusCode, data)}
+			return
+		}
+		var out localsend.PrepareUploadResponse
+		if err := json.NewDecoder(res.Body).Decode(&out); err != nil {
+			answered <- answer{err: err}
+			return
+		}
+		answered <- answer{response: out}
+	}()
+
+	app.WaitFor("id:incoming-dialog", 5*time.Second)
+	app.Press("id:incoming-accept")
+	var a answer
+	select {
+	case a = <-answered:
+	case <-time.After(5 * time.Second):
+		t.Fatal("prepare-upload did not answer")
+	}
+	if a.err != nil {
+		t.Fatal(a.err)
+	}
+	for id, data := range contents {
+		token := a.response.Files[id]
+		if token == "" {
+			t.Fatalf("no token for %s: %+v", id, a.response)
+		}
+		url := fmt.Sprintf("http://127.0.0.1:%d%s/upload?sessionId=%s&fileId=%s&token=%s", port, localsend.APIPrefix,
+			a.response.SessionID, id, token)
+		res, err := http.Post(url, "application/octet-stream", bytes.NewReader(data))
+		if err != nil {
+			t.Fatal(err)
+		}
+		res.Body.Close()
+		if res.StatusCode != http.StatusOK {
+			t.Fatalf("upload answered %d", res.StatusCode)
+		}
+	}
+
+	archive := filepath.Join(dir, "photos.zip")
+	folder := filepath.Join(dir, "photos")
+	deadline := time.Now().Add(5 * time.Second)
+	for {
+		// The app packs the folder after the session ends, on its own clock.
+		app.Advance(20 * time.Millisecond)
+		if _, err := os.Stat(archive); err == nil {
+			if _, err := os.Stat(folder); os.IsNotExist(err) {
+				break
+			}
+		}
+		if time.Now().After(deadline) {
+			t.Fatalf("%s was not written or the folder it packed was not removed", archive)
+		}
+	}
+	entries, contentsByName := readArchive(t, archive)
+	slices.Sort(entries)
+	if want := []string{"photos/a.txt", "photos/sub/b.txt"}; !slices.Equal(entries, want) {
+		t.Fatalf("archive holds %v, want %v", entries, want)
+	}
+	if got := contentsByName["photos/sub/b.txt"]; got != "sent photos/sub/b.txt" {
+		t.Fatalf("archive holds %q", got)
+	}
+	if _, err := os.Stat(folder); !os.IsNotExist(err) {
+		t.Fatalf("the received folder is still there: %v", err)
+	}
+	if app.Exists("id:nav-transfers") {
+		app.Press("id:nav-transfers")
+		app.WaitFor("id:open-received", 5*time.Second)
 	}
 }

@@ -59,21 +59,24 @@ type transferFile struct {
 
 // transfer is one send or receive session, active or finished.
 type transfer struct {
-	ID              string           `json:"id"`
-	Direction       string           `json:"direction"` // send or receive
-	Peer            localsend.Device `json:"peer"`
-	Status          string           `json:"status"`
-	Files           []transferFile   `json:"files"`
-	Total           int64            `json:"total"`
-	Done            int64            `json:"done"`
-	Speed           float64          `json:"-"`
-	Started         time.Time        `json:"started"`
-	Ended           time.Time        `json:"ended,omitempty"`
-	Reason          string           `json:"reason,omitempty"`
-	Err             string           `json:"error,omitempty"`
-	SavedDir        string           `json:"savedDir,omitempty"`
-	NeedPIN         bool             `json:"-"`
-	CancelRequested bool             `json:"-"`
+	ID        string           `json:"id"`
+	Direction string           `json:"direction"` // send or receive
+	Peer      localsend.Device `json:"peer"`
+	Status    string           `json:"status"`
+	Files     []transferFile   `json:"files"`
+	Total     int64            `json:"total"`
+	Done      int64            `json:"done"`
+	Speed     float64          `json:"-"`
+	Started   time.Time        `json:"started"`
+	Ended     time.Time        `json:"ended,omitempty"`
+	Reason    string           `json:"reason,omitempty"`
+	Err       string           `json:"error,omitempty"`
+	SavedDir  string           `json:"savedDir,omitempty"`
+	// Archive is the zip a received folder arrived as, when the platform
+	// cannot open a folder.
+	Archive         string `json:"archive,omitempty"`
+	NeedPIN         bool   `json:"-"`
+	CancelRequested bool   `json:"-"`
 
 	lastAt   time.Time
 	lastDone int64
@@ -83,6 +86,7 @@ type transfer struct {
 const (
 	statusWaiting   = "waiting"
 	statusActive    = "active"
+	statusArchiving = "archiving"
 	statusCompleted = "completed"
 	statusFailed    = "failed"
 	statusCancelled = "cancelled"
@@ -756,6 +760,8 @@ func statusLabel(cx *core.Scope, t *transfer) string {
 			return l.Receiving()
 		}
 		return l.Sending()
+	case statusArchiving:
+		return l.Compressing()
 	case statusCompleted:
 		return l.Completed()
 	case statusFailed:
