@@ -111,6 +111,42 @@ func TestMacMenu(t *testing.T) {
 	}
 }
 
+// TestSettingsSwitch turns quick save on with the platform's own switch
+// on macOS, and with ui's elsewhere.
+func TestSettingsSwitch(t *testing.T) {
+	t.Setenv("LOCALSEND_OFFLINE", "1")
+	opts := []nsgotest.Option{nsgotest.Size(1100, 760), nsgotest.Storage(map[string]string{"settings": `{"locale":"en"}`})}
+	if nsgotest.Target() == "" {
+		opts = append(opts, nsgotest.Environment(core.Environment{OS: core.OSMacOS, Locale: "en-US"}))
+	}
+	app := nsgotest.Start(t, Root, opts...)
+	skipIfNoSidebar(t, app)
+	app.Press("id:nav-settings")
+	const sw = "id:settings-quick-save"
+	on := func() bool {
+		v := app.FindMounted(sw)
+		if v.Component != "" {
+			return v.NativeProps["checked"] == true
+		}
+		return v.Props.Checked
+	}
+	if on() {
+		t.Fatal("quick save starts on")
+	}
+	native := app.FindMounted(sw).Component != ""
+	if apple := nsgotest.Target() == "" || nsgotest.Target() == "macos"; native != apple {
+		t.Fatalf("system switch shown: %v, want %v", native, apple)
+	}
+	if native && nsgotest.Target() == "" {
+		app.Emit(sw, "change", true)
+	} else {
+		app.Press(sw)
+	}
+	if !on() {
+		t.Fatal("quick save stayed off")
+	}
+}
+
 func TestSidebarFooterOpensSettings(t *testing.T) {
 	t.Setenv("LOCALSEND_OFFLINE", "1")
 	app := nsgotest.Start(t, Root, nsgotest.Size(1100, 760))

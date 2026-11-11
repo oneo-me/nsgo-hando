@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Show the system's own switches in Settings on macOS and iOS.
 - Pack a folder received on iOS into one zip.
 
 ## [0.2026.1] - 2026-11-11

@@ -301,7 +301,9 @@ func (a *app) receiveSettings(cx *core.Scope) core.Node {
 			OnChange: func(on bool) {
 				a.settings.Update(func(s settings) settings { s.QuickSave = on; return s })
 			},
-			Label: l.QuickSave(),
+			Label:   l.QuickSave(),
+			Variant: ui.SwitchSystem,
+			TestID:  "settings-quick-save",
 		}),
 		a.settingsRow(cx, l.VerifyChecksums(), l.VerifyChecksumsDetail(), ui.Switch{
 			Checked: func() bool { return a.settings.Get().VerifyChecksums },
@@ -309,7 +311,9 @@ func (a *app) receiveSettings(cx *core.Scope) core.Node {
 				a.settings.Update(func(s settings) settings { s.VerifyChecksums = on; return s })
 				a.restartNode()
 			},
-			Label: l.VerifyChecksums(),
+			Label:   l.VerifyChecksums(),
+			Variant: ui.SwitchSystem,
+			TestID:  "settings-verify-checksums",
 		}),
 		folder,
 		a.settingsAction(cx, l.UseDefaultFolder(), func() bool { return a.settings.Get().ReceiveDir == "" },
@@ -382,7 +386,9 @@ func (a *app) privacySettings(cx *core.Scope) core.Node {
 			OnChange: func(on bool) {
 				a.settings.Update(func(s settings) settings { s.StatsOff = !on; return s })
 			},
-			Label: l.UsageStats(),
+			Label:   l.UsageStats(),
+			Variant: ui.SwitchSystem,
+			TestID:  "settings-usage-stats",
 		}),
 	})
 }
