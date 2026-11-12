@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.2026.2] - 2026-11-12
+
 - Update the app from its GitHub releases, automatically on macOS and Windows and by offering the new version elsewhere, with *Check for Updates…* in Settings and the macOS menu.
 - Show the system's own switches in Settings on macOS and iOS.
 - Pack a folder received on iOS into one zip.

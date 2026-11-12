@@ -1,6 +1,6 @@
 name: Hando
 id: me.oneo.hando
-version: 0.2026.1
+version: 0.2026.2
 
 dev:
   target: native
