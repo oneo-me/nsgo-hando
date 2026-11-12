@@ -31,7 +31,7 @@ Hando is an NSGo app whose screens are Go components and signals, with the Local
 - A file is written as `<name>.part` and renamed after it is complete and, when the sender offered a SHA-256 and verification is on, checked. A failed write, checksum or cancellation leaves no final file and removes the part file.
 - One receive session and one upload per file may run at a time; the protocol's session ID and per-file token guard both.
 - Settings are the `settings` storage entry; favorites and history are `favorites` and `history`. The TLS identity lives in the app's data folder, not in storage.
-- Usage statistics are page views and heartbeats with a random install ID, sent to Umami from release builds on native targets; they never carry device, peer, file or transfer data, and a setting turns them off. Builds of `nsgo dev`, tests and the web send nothing.
+- Usage statistics are page views and heartbeats with a random install ID, sent to Umami from release builds on native targets, in one site with the website and tagged by platform, the website's as `website`; they never carry device, peer, file or transfer data, and a setting turns them off. Builds of `nsgo dev`, tests and the web send nothing.
 
 ## Core flows
 

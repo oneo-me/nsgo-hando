@@ -70,12 +70,14 @@ const altPath = page ? localePath(lang === 'en' ? 'zh' : 'en', path) : null;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={image} />
 
-    <!-- Umami counts the deployed site's visits; data-domains skips local servers. -->
+    <!-- Umami counts the deployed site's visits in the app's site (stats.go),
+         tagged as the website; data-domains skips local servers. -->
     <script
       is:inline
       defer
       src="https://umami.oneo.me/script.js"
-      data-website-id="a549ff40-f341-40de-b81d-4af5cd76115f"
+      data-website-id="c49d1ed4-6be7-42b4-a188-d44fe96d0b50"
+      data-tag="website"
       data-domains="oneo-me.github.io"></script>
     <script is:inline define:vars={{ lang, zhPath }}>
       // Apply the stored appearance, and the system's unless one is chosen,
