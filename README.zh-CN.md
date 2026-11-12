@@ -71,7 +71,7 @@ go tool nsgo dev -target ios_simulator
 
 修改协议或应用状态前请阅读 [ARCHITECTURE.md](ARCHITECTURE.md)，工作规则见 [AGENTS.md](AGENTS.md)。用户可见的变化记录在 [CHANGELOG.md](CHANGELOG.md)。
 
-发布时修改 `nsgo.yaml` 的 `version`，把 `CHANGELOG.md` 的 `Unreleased` 移到该版本下，再推送标签 `v<version>`：CI 在 Mac 上构建所有安装包，发布为该标签的 GitHub Release，并以该版本的章节作为更新说明。
+发布时修改 `nsgo.yaml` 的 `version`，把 `CHANGELOG.md` 的 `Unreleased` 移到该版本下，再推送标签 `v<version>`：CI 在 Mac 上构建所有安装包，发布为该标签的 GitHub Release，并以该版本的章节作为更新说明。已安装的应用从该 Release 的 appcast 更新，这些安装包由 `nsgo.yaml` 中 `updates.key` 对应的私钥签名，私钥保存在仓库的 `NSGO_UPDATES_KEY` 密钥中；也请在密码管理器里备份，因为已安装的应用不接受其他密钥签名的更新。
 
 [website/](website/README.md) 是用 Astro 构建、发布到 GitHub Pages 的官方网站；在其中运行 `bun install && bun run dev`，可在 `/nsgo-hando/` 下预览。
 

@@ -3,11 +3,13 @@ package main
 import (
 	"strconv"
 	"strings"
+	"testing"
 
 	"github.com/oneo-me/nsgo/base"
 	"github.com/oneo-me/nsgo/core"
 	"github.com/oneo-me/nsgo/icons/lucide"
 	"github.com/oneo-me/nsgo/ui"
+	"github.com/oneo-me/nsgo/updater"
 
 	"github.com/oneo-me/nsgo-localsend/internal/localsend"
 	"github.com/oneo-me/nsgo-localsend/locales"
@@ -393,13 +395,27 @@ func (a *app) privacySettings(cx *core.Scope) core.Node {
 	})
 }
 
-// aboutSettings names the app and its protocol.
+// aboutSettings names the app and its protocol, and checks for a newer
+// version where the app updates.
 func (a *app) aboutSettings(cx *core.Scope) core.Node {
 	l := locales.For(cx)
 	self := a.selfDevice()
-	return a.settingsSection(cx, l.SettingsAbout(), l.AboutDetail(), []core.Node{
+	rows := []core.Node{
 		a.settingsRow(cx, l.Version(), "", a.settingsValue(cx, versionString)),
 		a.settingsRow(cx, l.Protocol(), "", a.settingsValue(cx, func() string { return localsend.Version })),
 		a.settingsRow(cx, l.Fingerprint(), "", a.settingsValue(cx, func() string { return shortFingerprint(self.Fingerprint) })),
-	})
+	}
+	if updatesShown(cx) {
+		rows = append(rows, a.settingsAction(cx, l.CheckForUpdates(), func() bool { return false },
+			func() { updater.Check(cx) }, "settings-check-updates"))
+	}
+	return a.settingsSection(cx, l.SettingsAbout(), l.AboutDetail(), rows)
+}
+
+// updatesShown reports whether the app offers to check for updates: in
+// builds of nsgo build on native targets, as development builds have no
+// updater and the web loads its newest version anyway. Tests check
+// against nsgotest's updater.
+func updatesShown(cx *core.Scope) bool {
+	return (!core.App().Development || testing.Testing()) && cx.Env().OS() != core.OSWeb
 }

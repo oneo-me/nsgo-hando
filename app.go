@@ -25,9 +25,6 @@ import (
 	"github.com/oneo-me/nsgo-localsend/locales"
 )
 
-// version is the app's version, as nsgo.yaml names it.
-const version = "0.1.0"
-
 // desktopWidth is where the window takes the sidebar layout.
 const desktopWidth core.Points = 760
 
@@ -932,8 +929,8 @@ func (a *app) setPageIndex(index int) {
 	}
 }
 
-// versionString is the app's version.
-func versionString() string { return version }
+// versionString is the app's version, as nsgo.yaml names it.
+func versionString() string { return core.App().Version }
 
 // parsePort keeps a typed port valid.
 func parsePort(s string) int {

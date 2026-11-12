@@ -210,6 +210,7 @@ const (
 	textWebTitle
 	textWebDetail
 	textMenuSettings
+	textCheckForUpdates
 	textMenuEdit
 	textMenuView
 	textMenuWindow
@@ -352,6 +353,7 @@ var keyOfText = [numTexts]string{
 	"webTitle",
 	"webDetail",
 	"menuSettings",
+	"checkForUpdates",
 	"menuEdit",
 	"menuView",
 	"menuWindow",
@@ -492,6 +494,7 @@ var textsEn = i18n.NewTexts(""+
 	"Browser build"+
 	"Receiving and device discovery need native sockets. Use the desktop, iOS or Android app to move files."+
 	"Settings…"+
+	"Check for Updates…"+
 	"Edit"+
 	"View"+
 	"Window"+
@@ -629,6 +632,7 @@ var textsEn = i18n.NewTexts(""+
 		13,
 		102,
 		11,
+		20,
 		4,
 		4,
 		6,
@@ -769,6 +773,7 @@ var textsZhHans = i18n.NewTexts(""+
 	"网页版本"+
 	"接收文件与发现设备需要原生网络套接字。请使用桌面、iOS 或 Android 应用传输文件。"+
 	"设置…"+
+	"检查更新…"+
 	"编辑"+
 	"显示"+
 	"窗口"+
@@ -906,6 +911,7 @@ var textsZhHans = i18n.NewTexts(""+
 		12,
 		112,
 		9,
+		15,
 		6,
 		6,
 		6,
@@ -2294,6 +2300,13 @@ func MenuSettings(cx *core.Scope) string { return For(cx).MenuSettings() }
 
 // MenuSettings is the package's MenuSettings in the language of msgs.
 func (msgs Messages) MenuSettings() string { return msgs.text(textMenuSettings) }
+
+// CheckForUpdates says "Check for Updates…"
+// in the language the app shows under cx.
+func CheckForUpdates(cx *core.Scope) string { return For(cx).CheckForUpdates() }
+
+// CheckForUpdates is the package's CheckForUpdates in the language of msgs.
+func (msgs Messages) CheckForUpdates() string { return msgs.text(textCheckForUpdates) }
 
 // MenuEdit says "Edit"
 // in the language the app shows under cx.

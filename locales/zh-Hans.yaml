@@ -151,6 +151,7 @@ chooseFolderUnavailable: 此平台无法使用该文件夹。
 webTitle: 网页版本
 webDetail: 接收文件与发现设备需要原生网络套接字。请使用桌面、iOS 或 Android 应用传输文件。
 menuSettings: 设置…
+checkForUpdates: 检查更新…
 menuEdit: 编辑
 menuView: 显示
 menuWindow: 窗口

@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"testing"
 	"time"
 
 	"github.com/oneo-me/nsgo/core"
@@ -16,9 +15,10 @@ import (
 // The app counts its use in Umami in the one site it shares with the
 // website, which tags its visits "website": a pageview for each page
 // shown, tagged with the app's platform and carrying a random ID kept
-// in the storage, so that one install is one visitor. Builds of nsgo dev
-// (statsBuild), test binaries and the web report nothing, and the settings
-// turn it off. Nothing about devices, files or transfers is sent.
+// in the storage, so that one install is one visitor. Development builds
+// (core.App), which test binaries are, and the web report nothing, and
+// the settings turn it off. Nothing about devices, files or transfers is
+// sent.
 const (
 	statsURL     = "https://umami.oneo.me/api/send"
 	statsWebsite = "c49d1ed4-6be7-42b4-a188-d44fe96d0b50"
@@ -60,7 +60,7 @@ type statsPayload struct {
 // heartbeats while it is read. Events are made on the engine's goroutine
 // and sent from another, oldest first; one that fails is dropped.
 func (a *app) reportUsage(cx *core.Scope) {
-	if !statsBuild || testing.Testing() || !statsShown(cx) {
+	if core.App().Development || !statsShown(cx) {
 		return
 	}
 	store := cx.Storage()
@@ -145,5 +145,5 @@ func statsAgent(os core.OS) string {
 	if !ok {
 		return ""
 	}
-	return "Mozilla/5.0 (" + p + ") Hando/" + version
+	return "Mozilla/5.0 (" + p + ") Hando/" + versionString()
 }

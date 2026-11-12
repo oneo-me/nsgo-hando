@@ -71,7 +71,7 @@ go tool nsgo dev -target ios_simulator
 
 Read [ARCHITECTURE.md](ARCHITECTURE.md) before changing the protocol or the app's state, and [AGENTS.md](AGENTS.md) for the working rules. User-visible changes go in [CHANGELOG.md](CHANGELOG.md).
 
-To release, set `version` in `nsgo.yaml`, move `Unreleased` in `CHANGELOG.md` under that version and push the tag `v<version>`: CI builds every package on a Mac and publishes them as the tag's GitHub release, with that section as its notes.
+To release, set `version` in `nsgo.yaml`, move `Unreleased` in `CHANGELOG.md` under that version and push the tag `v<version>`: CI builds every package on a Mac and publishes them as the tag's GitHub release, with that section as its notes. Installed copies update from the release's appcasts, signed by the secret half of `nsgo.yaml`'s `updates.key`, which the repository's `NSGO_UPDATES_KEY` secret holds; keep it in a password manager too, as no other key signs updates the installed copies accept.
 
 The website in [website/](website/README.md) is an Astro site deployed to GitHub Pages; run `bun install && bun run dev` there to preview it at `/nsgo-hando/`.
 

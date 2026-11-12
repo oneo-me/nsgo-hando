@@ -34,3 +34,9 @@ android:
 
 release:
   github: oneo-me/nsgo-hando
+
+# Downloads update themselves from the latest GitHub release's appcasts,
+# whose installers the secret half of this key signs, given to CI as the
+# NSGO_UPDATES_KEY secret.
+updates:
+  key: jf+sY15rJDLA4ktuKCKSJPRoIjmh0Dv055tqmDcG0NM=

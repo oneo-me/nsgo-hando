@@ -1,14 +1,18 @@
 package main
 
 import (
+	"slices"
+
 	"github.com/oneo-me/nsgo/core"
 	"github.com/oneo-me/nsgo/desktop"
+	"github.com/oneo-me/nsgo/updater"
 
 	"github.com/oneo-me/nsgo-localsend/locales"
 )
 
-// installMenu gives macOS its menu bar: the app, editing, the pages and
-// the window. Windows and Linux keep their windows bare.
+// installMenu gives macOS its menu bar: the app with its update check,
+// editing, the pages and the window. Windows and Linux keep their windows
+// bare.
 func (a *app) installMenu(cx *core.Scope) {
 	if cx.Env().OS() != core.OSMacOS || !desktop.IsAvailable(cx) {
 		return
@@ -25,13 +29,17 @@ func (a *app) menu(cx *core.Scope) []desktop.MenuItem {
 		return desktop.MenuItem{Label: label, Shortcut: key, Checkable: true, Checked: page == id, When: core.MenuNotEditing,
 			OnSelect: func() { a.page.Set(id) }}
 	}
+	appItems := []desktop.MenuItem{
+		{Role: desktop.MenuAbout}, {Separator: true},
+		{Label: l.MenuSettings(), Shortcut: "mod+,", OnSelect: func() { a.page.Set("settings") }}, {Separator: true},
+		{Role: desktop.MenuHide}, {Role: desktop.MenuHideOthers}, {Role: desktop.MenuShowAll}, {Separator: true},
+		{Role: desktop.MenuQuit},
+	}
+	if updatesShown(cx) {
+		appItems = slices.Insert(appItems, 1, desktop.MenuItem{Label: l.CheckForUpdates(), OnSelect: func() { updater.Check(cx) }})
+	}
 	return []desktop.MenuItem{
-		{Label: l.AppName(), Items: []desktop.MenuItem{
-			{Role: desktop.MenuAbout}, {Separator: true},
-			{Label: l.MenuSettings(), Shortcut: "mod+,", OnSelect: func() { a.page.Set("settings") }}, {Separator: true},
-			{Role: desktop.MenuHide}, {Role: desktop.MenuHideOthers}, {Role: desktop.MenuShowAll}, {Separator: true},
-			{Role: desktop.MenuQuit},
-		}},
+		{Label: l.AppName(), Items: appItems},
 		{Label: l.MenuEdit(), Items: []desktop.MenuItem{
 			{Role: desktop.MenuUndo}, {Role: desktop.MenuRedo}, {Separator: true},
 			{Role: desktop.MenuCut}, {Role: desktop.MenuCopy}, {Role: desktop.MenuPaste}, {Role: desktop.MenuSelectAll},

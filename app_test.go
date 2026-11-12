@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -108,6 +109,30 @@ func TestMacMenu(t *testing.T) {
 	app.ChooseMenu("View", "Show Sidebar")
 	if app.Exists("id:nav-settings") {
 		t.Fatal("the sidebar is still shown")
+	}
+}
+
+// TestCheckForUpdates asks the platform's updater from the menu bar and
+// from settings.
+func TestCheckForUpdates(t *testing.T) {
+	t.Setenv("LOCALSEND_OFFLINE", "1")
+	opts := []nsgotest.Option{nsgotest.Size(1100, 760), nsgotest.Storage(map[string]string{"settings": `{"locale":"en"}`})}
+	if nsgotest.Target() == "" {
+		opts = append(opts, nsgotest.Environment(core.Environment{OS: core.OSMacOS, Locale: "en-US"}))
+	}
+	app := nsgotest.Start(t, Root, opts...)
+	app.Update = func(bool) core.UpdateCheck { return core.UpdateCheck{Shown: true} }
+	want := 0
+	if len(app.Menu) > 0 {
+		app.ChooseMenu("Hando", "Check for Updates…")
+		want++
+	}
+	skipIfNoSidebar(t, app)
+	app.Press("id:nav-settings")
+	app.Press("id:settings-check-updates")
+	want++
+	if len(app.UpdateChecks) != want || slices.Contains(app.UpdateChecks, true) {
+		t.Fatalf("update checks = %v, want %d asked by the user", app.UpdateChecks, want)
 	}
 }
 

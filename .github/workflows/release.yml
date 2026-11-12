@@ -2,7 +2,8 @@ name: Release
 
 # Pushing a tag v<version>, the version nsgo.yaml names, builds every
 # package on a Mac and publishes the releases directory as its release,
-# with the version's section of CHANGELOG.md as its notes.
+# with the version's section of CHANGELOG.md as its notes, and the
+# appcasts that installed copies update from.
 on:
   push:
     tags:
@@ -46,7 +47,16 @@ jobs:
       - name: Test
         run: go tool nsgo test
       - name: Build
-        run: go tool nsgo build
+        env:
+          # Signs the installers each appcast offers, which installed
+          # copies update from.
+          NSGO_UPDATES_KEY: ${{ secrets.NSGO_UPDATES_KEY }}
+        run: |
+          if [ -z "$NSGO_UPDATES_KEY" ]; then
+            echo "::error::the repository has no NSGO_UPDATES_KEY secret to sign updates with"
+            exit 1
+          fi
+          go tool nsgo build
       - name: Publish
         env:
           GH_TOKEN: ${{ github.token }}
